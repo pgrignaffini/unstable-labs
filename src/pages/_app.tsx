@@ -9,6 +9,13 @@ import type { AppRouter } from "../server/router";
 import type { Session } from "next-auth";
 import "../styles/globals.css";
 import Header from "../components/Header";
+import { WagmiConfig, createClient } from 'wagmi'
+import { getDefaultProvider } from 'ethers'
+
+const client = createClient({
+  autoConnect: true,
+  provider: getDefaultProvider(),
+})
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
@@ -16,9 +23,11 @@ const MyApp: AppType<{ session: Session | null }> = ({
 }) => {
   return (
     <SessionProvider session={session}>
-      <div className="bg-black min-h-screen">
-        <Component {...pageProps} />
-      </div>
+      <WagmiConfig client={client}>
+        <div className="bg-black min-h-screen">
+          <Component {...pageProps} />
+        </div>
+      </WagmiConfig>
     </SessionProvider>
   );
 };

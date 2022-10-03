@@ -1,4 +1,5 @@
 import React from 'react'
+import ConnectWallet from './ConnectWallet'
 
 function Header() {
     return (
@@ -10,6 +11,7 @@ function Header() {
                 </div>
             </div>
             <p className='font-pixel font-xl text-white cursor-pointer'>Collections</p>
+            <ConnectWallet />
         </div>
     )
 }
