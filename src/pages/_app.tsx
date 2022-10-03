@@ -11,6 +11,7 @@ import "../styles/globals.css";
 import Header from "../components/Header";
 import { WagmiConfig, createClient } from 'wagmi'
 import { getDefaultProvider } from 'ethers'
+import Footer from "../components/Footer";
 
 const client = createClient({
   autoConnect: true,
@@ -26,6 +27,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
       <WagmiConfig client={client}>
         <div className="bg-black min-h-screen">
           <Component {...pageProps} />
+          <Footer />
         </div>
       </WagmiConfig>
     </SessionProvider>

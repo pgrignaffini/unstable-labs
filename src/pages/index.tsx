@@ -16,21 +16,37 @@ const Home: NextPage = () => {
       </Head>
       <main className="container mx-auto w-4/5 p-10">
         <Header />
-        <div className="mt-24 w-1/2 mx-auto">
-          <p className="font-pixel font-bold text-3xl text-white">Welcome to <span className="text-acid">Unstable</span>Labs!</p>
-          <p className="font-pixel font-bold text-lg text-gray-400 text-center">a lab to brew AI-generated NFTs</p>
+        <div className="mt-4 relative ">
+          <img src="/lab-top.png" alt="lab-top" className="w-full" />
+          <div className="w-full absolute bg-black bottom-1/2 ">
+            <p className="font-pixel font-bold text-3xl text-white text-center">Welcome to <span className="text-acid">Unstable</span>Labs!</p>
+            <p className="font-pixel font-bold text-lg text-gray-400 text-center">a lab to brew AI-generated NFTs</p>
+          </div>
         </div>
-        <div className="bg-gray-400 w-3/4 mx-auto mt-24 p-10">
+        <div className="mt-10">
+          <div className="flex space-x-4 items-center">
+            <p className="font-pixel font-bold text-3xl text-white text-center"><span className="text-yellow-200">Step</span> into the Brewery</p>
+            <img src="/brewery.png" className="w-20" />
+          </div>
+        </div>
+        <div className="bg-gray-400 w-3/4 mx-auto mt-12 p-10">
           <div className="flex space-x-5">
             <input type="text" className="w-full p-4 placeholder:font-pixel text-black outline-none font-pixel" placeholder="Enter your description" />
             <button className="bg-acid text-white p-4 font-pixel hover:animate-tremble">Brew</button>
+          </div>
+          <div className="mt-4">
+            <select name="options">
+              <option value="1" className="font-pixel">Option 1</option>
+              <option value="2">Option 1</option>
+              <option value="3">Option 1</option>
+            </select>
           </div>
         </div>
         <div className="w-full mt-24">
           <ResultCarousel />
         </div>
         <div className="mt-24">
-          <img src="/pixel-lab.png" alt="flask" className="w-full" />
+          <img src="/lab-bottom.png" alt="lab-bottom" className="w-full" />
         </div>
       </main>
     </>
