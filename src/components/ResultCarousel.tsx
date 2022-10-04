@@ -1,5 +1,6 @@
 import Diffemon from "../../data/Diffemon.json"
 import React, { useState } from 'react'
+import SolidButton from "./SolidButton"
 
 function ResultCarousel() {
 
@@ -22,7 +23,9 @@ function ResultCarousel() {
                                 <img src={`/diffemon/${index}.png`}
                                 />
                             </label>
-                            <button className="bg-acid text-white p-4 font-pixel cursor-pointer mt-4 w-full">Mint</button>
+                            <div className="mt-4">
+                                <SolidButton text="Mint" />
+                            </div>
                         </div>
                     </div>
                 ))}

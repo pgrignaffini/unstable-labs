@@ -1,11 +1,16 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import Header from "../components/Header";
 import ResultCarousel from "../components/ResultCarousel";
 import { trpc } from "../utils/trpc";
+import dynamic from 'next/dynamic'
+import SolidButton from "../components/SolidButton";
+
+const Header = dynamic(
+  () => import('../components/Header'),
+  { ssr: false }
+)
 
 const Home: NextPage = () => {
-
 
   return (
     <>
@@ -23,16 +28,15 @@ const Home: NextPage = () => {
             <p className="font-pixel font-bold text-lg text-gray-400 text-center">a lab to brew AI-generated NFTs</p>
           </div>
         </div>
-        <div className="mt-10">
-          <div className="flex space-x-4 items-center">
-            <p className="font-pixel font-bold text-3xl text-white text-center"><span className="text-yellow-200">Step</span> into the Brewery</p>
-            <img src="/brewery.png" className="w-20" />
-          </div>
+        <div className="flex mt-10 justify-center items-center ">
+          <p className="font-pixel font-bold text-3xl text-white">Step into</p>
+          <img src="/brewery-animated.gif" className="w-32" />
+          <p className="font-pixel font-bold text-3xl text-white">the Brewery</p>
         </div>
         <div className="bg-gray-400 w-3/4 mx-auto mt-12 p-10">
           <div className="flex space-x-5">
             <input type="text" className="w-full p-4 placeholder:font-pixel text-black outline-none font-pixel" placeholder="Enter your description" />
-            <button className="bg-acid text-white p-4 font-pixel hover:animate-tremble">Brew</button>
+            <SolidButton text="Brew" />
           </div>
           <div className="mt-4">
             <select name="options">
@@ -42,11 +46,17 @@ const Home: NextPage = () => {
             </select>
           </div>
         </div>
+        <div className="flex justify-center mt-8">
+          <img src="/flask-combining.gif" alt="loading" className="w-64" />
+        </div>
         <div className="w-full mt-24">
           <ResultCarousel />
         </div>
-        <div className="mt-24">
-          <img src="/lab-bottom.png" alt="lab-bottom" className="w-full" />
+        <div className="mt-24 flex space-x-4">
+          <img src="/barrel-toxic.gif" alt="barrel" className="w-24" />
+          <img src="/barrels.png" alt="barrels" className="w-56" />
+          <img src="/pc-animated.gif" alt="barrels" className="w-48" />
+
         </div>
       </main>
     </>
