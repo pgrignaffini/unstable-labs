@@ -8,15 +8,39 @@ import type { AppType } from "next/app";
 import type { AppRouter } from "../server/router";
 import type { Session } from "next-auth";
 import "../styles/globals.css";
-import Header from "../components/Header";
+import dynamic from 'next/dynamic'
 import { WagmiConfig, createClient } from 'wagmi'
 import { getDefaultProvider } from 'ethers'
 import Footer from "../components/Footer";
+import { Alchemy, Network } from "alchemy-sdk";
+import { AppWrapper } from "../context/AppContext";
+import { QueryClient, QueryClientProvider } from "react-query";
+import { ReactQueryDevtools } from 'react-query/devtools'
+
+const config = {
+  apiKey: process.env.ALCHEMY_API_KEY,
+  network: Network.MATIC_MUMBAI,
+};
+
+const alchemy = new Alchemy(config);
 
 const client = createClient({
   autoConnect: true,
   provider: getDefaultProvider(),
 })
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000),
+    },
+  },
+})
+
+const Header = dynamic(
+  () => import('../components/Header'),
+  { ssr: false }
+)
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
@@ -25,10 +49,16 @@ const MyApp: AppType<{ session: Session | null }> = ({
   return (
     <SessionProvider session={session}>
       <WagmiConfig client={client}>
-        <div className="bg-black min-h-screen">
-          <Component {...pageProps} />
-          <Footer />
-        </div>
+        <QueryClientProvider client={queryClient}>
+          <AppWrapper alchemySdk={alchemy}>
+            <div className="bg-black min-h-screen">
+              <Header />
+              <Component {...pageProps} />
+              <Footer />
+            </div>
+          </AppWrapper>
+          <ReactQueryDevtools initialIsOpen={false} />
+        </QueryClientProvider>
       </WagmiConfig>
     </SessionProvider>
   );

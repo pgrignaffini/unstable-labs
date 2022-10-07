@@ -30,6 +30,9 @@ module.exports = {
       colors: {
         'acid': '#b4e61d',
       },
+      backgroundImage: {
+        'station': "url('/station.gif')",
+      }
     }
   },
   plugins: [

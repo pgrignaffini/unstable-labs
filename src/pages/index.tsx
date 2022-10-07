@@ -5,11 +5,6 @@ import { trpc } from "../utils/trpc";
 import dynamic from 'next/dynamic'
 import SolidButton from "../components/SolidButton";
 
-const Header = dynamic(
-  () => import('../components/Header'),
-  { ssr: false }
-)
-
 const Home: NextPage = () => {
 
   return (
@@ -20,7 +15,6 @@ const Home: NextPage = () => {
         <link rel="icon" href="/flask.png" />
       </Head>
       <main className="container mx-auto w-4/5 p-10">
-        <Header />
         <div className="mt-4 relative ">
           <img src="/lab-top.png" alt="lab-top" className="w-full" />
           <div className="w-full absolute bg-black bottom-1/2 ">
@@ -29,23 +23,16 @@ const Home: NextPage = () => {
           </div>
         </div>
         <div className="flex mt-10 justify-center items-center ">
-          <p className="font-pixel font-bold text-3xl text-white">Step into</p>
-          <img src="/brewery-animated.gif" className="w-32" />
-          <p className="font-pixel font-bold text-3xl text-white">the Brewery</p>
+          <p className="font-pixel font-bold text-3xl text-white">Step into the Brewery</p>
         </div>
-        <div className="bg-gray-400 w-3/4 mx-auto mt-12 p-10">
+        <img src="/brewery-animated.gif" className="w-72 mx-auto mt-16" />
+        <div className="bg-gray-400 p-6 w-2/3 mx-auto mt-16 row-start-3 col-start-3">
           <div className="flex space-x-5">
             <input type="text" className="w-full p-4 placeholder:font-pixel text-black outline-none font-pixel" placeholder="Enter your description" />
             <SolidButton text="Brew" />
           </div>
-          <div className="mt-4">
-            <select name="options">
-              <option value="1" className="font-pixel">Option 1</option>
-              <option value="2">Option 1</option>
-              <option value="3">Option 1</option>
-            </select>
-          </div>
         </div>
+
         <div className="flex justify-center mt-8">
           <img src="/flask-combining.gif" alt="loading" className="w-64" />
         </div>
