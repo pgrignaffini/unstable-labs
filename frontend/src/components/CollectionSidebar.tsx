@@ -26,6 +26,7 @@ function CollectionSidebar({ setSelectedTab }: Props) {
                     <CollectionSideBarRow title="Listed NFTs" type='nfts' onClick={() => setSelectedTab('listed-nfts')} />
                 </>
             )}
+            <CollectionSideBarRow title="Marketplace" type='star' onClick={() => setSelectedTab('marketplace')} />
         </div>
     )
 }

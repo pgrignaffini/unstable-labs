@@ -29,7 +29,6 @@ function TestPage({ }: Props) {
     return (
         <div className='h-screen flex justify-center items-center'>
             <div className='flex flex-col space-y-6'>
-                <MintButton />
                 <SolidButton text="Get NFTs" onClick={() => getNFTs()} />
                 <div className='flex spae-x-4'>
                     {
