@@ -3,6 +3,7 @@ import CollectionSidebar from "../components/CollectionSidebar";
 import { useState } from "react";
 import Trending from "../components/Trending";
 import YourNfts from "../components/YourNfts";
+import ListedNfts from "../components/ListedNfts";
 
 const Collections: NextPage = () => {
 
@@ -15,6 +16,7 @@ const Collections: NextPage = () => {
             </div>
             {selectedTab === 'trending' && <Trending />}
             {selectedTab === 'your-nfts' && <YourNfts />}
+            {selectedTab === 'listed-nfts' && <ListedNfts />}
         </div>
     );
 }

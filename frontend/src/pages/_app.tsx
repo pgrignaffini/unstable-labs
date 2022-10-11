@@ -9,8 +9,9 @@ import type { AppRouter } from "../server/router";
 import type { Session } from "next-auth";
 import "../styles/globals.css";
 import dynamic from 'next/dynamic'
-import { WagmiConfig, createClient } from 'wagmi'
-import { getDefaultProvider } from 'ethers'
+import { WagmiConfig, createClient, configureChains, chain } from 'wagmi'
+import { alchemyProvider } from 'wagmi/providers/alchemy'
+import { publicProvider } from 'wagmi/providers/public'
 import Footer from "../components/Footer";
 import { Alchemy, Network } from "alchemy-sdk";
 import { AppWrapper } from "../context/AppContext";
@@ -24,9 +25,14 @@ const config = {
 
 const alchemy = new Alchemy(config);
 
+const { provider } = configureChains([chain.polygonMumbai], [
+  alchemyProvider({ apiKey: process.env.ALCHEMY_API_KEY }),
+  publicProvider(),
+])
+
 const client = createClient({
   autoConnect: true,
-  provider: getDefaultProvider(),
+  provider
 })
 
 const queryClient = new QueryClient({

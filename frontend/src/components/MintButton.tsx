@@ -47,7 +47,12 @@ function MintButton({ image, name, description }: Props) {
         }
     })
 
-    const { write: createToken, data } = useContractWrite(config)
+    const { write: createToken, data } = useContractWrite({
+        ...config,
+        onSuccess(data) {
+            console.log('Token creation success', data)
+        }
+    })
 
     useContractEvent({
         addressOrName: nftContractInfo.address,
