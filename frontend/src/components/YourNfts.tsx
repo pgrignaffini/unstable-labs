@@ -5,19 +5,23 @@ import { OwnedNft } from 'alchemy-sdk'
 import Loader from '../components/Loader'
 import NFTCard from '../components/NFTCard'
 import { useAccount } from "wagmi"
+import nftContractInfo from "../../../contracts/abi/nft.json"
 
 type Props = {}
 function YourNfts({ }: Props) {
 
     const { alchemySdk } = useAppContext()
-    const { address, isConnected } = useAccount()
+    const { address } = useAccount()
 
     const getNFTs = async () => {
         const response = await alchemySdk.nft.getNftsForOwner(address as string)
         return response?.ownedNfts
     }
 
-    const { data: nfts, isLoading } = useQuery('nfts', getNFTs)
+    const { data: nfts, isLoading } = useQuery('your-nfts', getNFTs, {
+        select: (data: OwnedNft[]) => data?.filter((nft: OwnedNft) =>
+            nft.contract.address.toUpperCase() === nftContractInfo.address.toUpperCase())
+    })
 
     return (
         <>

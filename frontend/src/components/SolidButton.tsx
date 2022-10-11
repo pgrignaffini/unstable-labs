@@ -3,14 +3,15 @@ import { useState } from 'react'
 interface Props {
   text: string
   onClick?: () => void
+  width?: string
 }
 
-function SolidButton({ text, onClick }: Props) {
+function SolidButton({ text, onClick, width }: Props) {
 
   const [clicked, setClicked] = useState(false)
 
   return (
-    <button className='relative font-pixel text-md text-white' onPointerOver={() => setClicked(false)} onClick={() => {
+    <button type="button" className={`relative font-pixel text-md text-white ${width}`} onPointerOver={() => setClicked(false)} onClick={() => {
       setClicked(true)
       onClick?.()
     }}>

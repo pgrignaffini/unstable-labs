@@ -4,21 +4,21 @@ import { useQuery } from 'react-query'
 import { Nft } from 'alchemy-sdk'
 import Loader from '../components/Loader'
 import NFTCard from '../components/NFTCard'
+import nftContractInfo from "../../../contracts/abi/nft.json"
 
 type Props = {}
 function Trending({ }: Props) {
 
     const { alchemySdk } = useAppContext()
-    const address = process.env.NEXT_PUBLIC_MINT_CONTRACT_ADDRESS;
 
     const getNFTs = async () => {
-        const response = await alchemySdk.nft.getNftsForContract(address, {
+        const response = await alchemySdk.nft.getNftsForContract(nftContractInfo.address, {
             omitMetadata: false,
         });
         return response?.nfts
     }
 
-    const { data: nfts, isLoading } = useQuery('nfts', getNFTs)
+    const { data: nfts, isLoading } = useQuery('trending-nfts', getNFTs)
 
     return (
         <>
