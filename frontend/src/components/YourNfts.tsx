@@ -6,15 +6,43 @@ import Loader from '../components/Loader'
 import NFTCard from '../components/NFTCard'
 import { useAccount } from "wagmi"
 import nftContractInfo from "../../../contracts/abi/nft.json"
+import marketplaceContractInfo from "../../../contracts/abi/marketplace.json"
+import { useContractRead } from 'wagmi'
 import ListButton from './ListButton'
+import type { MarketItem } from '../../typings'
+import type { Nft } from 'alchemy-sdk'
 
 type Props = {}
 function YourNfts({ }: Props) {
 
     const { alchemySdk } = useAppContext()
     const { address } = useAccount()
-    const [selectedNft, setSelectedNft] = React.useState<OwnedNft | undefined>(undefined)
+    const [selectedNft, setSelectedNft] = React.useState<OwnedNft | Nft & MarketItem | undefined>(undefined)
     const [price, setPrice] = React.useState<string>("0.1")
+
+    const { data: ownedMarketItems } = useContractRead({
+        addressOrName: marketplaceContractInfo.address,
+        contractInterface: marketplaceContractInfo.abi,
+        functionName: 'fetchOwnedMarketItems',
+        onSuccess(data) {
+            console.log('Success', data)
+        }
+    })
+
+    const getOwnedNftsOnMarket = async () => {
+        if (ownedMarketItems) {
+            const ownedNfts = await Promise.all(
+                ownedMarketItems.map(async (nft: MarketItem) => {
+                    const ownedNft: Nft = await alchemySdk.nft.getNftMetadata(
+                        nftContractInfo.address,
+                        nft.tokenId.toString()
+                    )
+                    return { ...ownedNft, ...nft }
+                })
+            )
+            return ownedNfts
+        }
+    }
 
     const getNFTs = async () => {
         const response = await alchemySdk.nft.getNftsForOwner(address as string)
@@ -23,8 +51,11 @@ function YourNfts({ }: Props) {
 
     const { data: nfts, isLoading } = useQuery('your-nfts', getNFTs, {
         select: (data: OwnedNft[]) => data?.filter((nft: OwnedNft) =>
-            nft.contract.address.toUpperCase() === nftContractInfo.address.toUpperCase())
+            nft.contract.address.toUpperCase() === nftContractInfo.address.toUpperCase() && nft.tokenUri
+        )
     })
+
+    const { data: nftsOnMarket } = useQuery('your-nfts-on-market', getOwnedNftsOnMarket)
 
     return (
         <>
@@ -55,6 +86,12 @@ function YourNfts({ }: Props) {
                                 <label htmlFor="listing-modal" className='cursor-pointer mt-4'
                                     key={index} onClick={() => setSelectedNft(nft)}>
                                     <NFTCard nft={nft} />
+                                </label>
+                            ))}
+                            {nftsOnMarket?.map((nft: Nft & MarketItem, index: number) => (
+                                <label htmlFor="listing-modal" className='cursor-pointer mt-4'
+                                    key={index} onClick={() => setSelectedNft(nft)}>
+                                    <NFTCard nft={nft} onSale={true} />
                                 </label>
                             ))}
                         </div>

@@ -1,7 +1,7 @@
 import React from 'react'
 import { useAppContext } from '../context/AppContext'
 import { useQuery } from 'react-query'
-import { Nft } from 'alchemy-sdk'
+import type { Nft } from 'alchemy-sdk'
 import Loader from '../components/Loader'
 import NFTCard from '../components/NFTCard'
 import nftContractInfo from "../../../contracts/abi/nft.json"
@@ -18,7 +18,9 @@ function Trending({ }: Props) {
         return response?.nfts
     }
 
-    const { data: nfts, isLoading } = useQuery('trending-nfts', getNFTs)
+    const { data: nfts, isLoading } = useQuery('trending-nfts', getNFTs, {
+        select: (data: Nft[]) => data?.filter((nft: Nft) => nft.tokenUri)
+    })
 
     return (
         <>

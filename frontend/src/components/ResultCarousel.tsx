@@ -21,17 +21,22 @@ function ResultCarousel() {
             <input type="checkbox" id="result-modal" className="modal-toggle" />
             <div className="modal">
                 <div className="w-1/3">
-                    <label htmlFor="result-modal" className="font-pixel text-2xl text-white cursor-pointer">X</label>
+                    <label htmlFor="result-modal" className="font-pixel text-2xl text-white cursor-pointer" onClick={() => {
+                        setName("")
+                        setDescription("")
+                    }}>X</label>
                     <div className="bg-white bg-opacity-50 backdrop-blur-xl p-8">
                         <div className="flex items-start space-x-10">
-                            <img className='w-1/3' src={imageToShow} alt="banner" />
+                            <img className='w-1/3' src={imageToShow} alt="image" />
                             <form className="flex flex-1 flex-col space-y-6 ">
-                                <input name="name" type="text"
+                                <input
+                                    type="text"
+                                    value={name}
                                     className="bg-white bg-opacity-50 backdrop-blur-xl p-2
                                  outline-none font-pixel text-black placeholder:font-pixel text-sm placeholder:text-sm"
                                     placeholder="Enter name..." onChange={(e) => setName(e.target.value)} />
                                 <textarea
-                                    name="description"
+                                    value={description}
                                     rows={5}
                                     className="bg-white bg-opacity-50 backdrop-blur-xl p-2
                                   outline-none text-black font-pixel placeholder:font-pixel text-sm placeholder:text-sm"
@@ -55,7 +60,8 @@ function ResultCarousel() {
                             </div>
                         </div>
                         <label htmlFor="result-modal" className='cursor-pointer mt-4'>
-                            <div className="font-pixel text-md text-white w-fit bg-acid py-4 px-10">Brew</div>
+                            <div className="font-pixel text-md text-white w-fit bg-acid py-4 px-10"
+                                onClick={() => setImageToShow(`/diffemon/${index}.png`)}>Brew</div>
                         </label>
                     </div>
                 ))}

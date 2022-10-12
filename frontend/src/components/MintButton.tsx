@@ -58,17 +58,15 @@ function MintButton({ image, name, description }: Props) {
         addressOrName: nftContractInfo.address,
         contractInterface: nftContractInfo.abi,
         eventName: 'TokenMinted',
-        listener: (event) => console.log(event),
+        listener: (event) => console.log("Token minted: " + event),
     })
-
-    const clickHandler = async () => {
-        await uploadMetadataToIPFS()
-        createToken?.()
-    }
 
     return (
         <div>
-            <SolidButton text="Mint" onClick={() => clickHandler?.()} />
+            <SolidButton text="Mint" onClick={async () => {
+                await uploadMetadataToIPFS()
+                createToken?.()
+            }} />
             <div className='flex justify-center mt-10'>
                 {data &&
                     <Link href={`https://mumbai.polygonscan.com/tx/${data?.hash}`}>

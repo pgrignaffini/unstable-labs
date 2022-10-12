@@ -25,20 +25,23 @@ function AvailableNftsOnMarket({ }: Props) {
     })
 
     const getAvailableNftsOnMarket = async () => {
-        const availableNfts = Array<Nft & MarketItem>()
         if (availableMarketItems) {
-            for (const nft of availableMarketItems) {
-                const ownedNft: Nft = await alchemySdk.nft.getNftMetadata(
-                    nftContractInfo.address,
-                    nft.tokenId.toString()
-                )
-                availableNfts.push({ ...ownedNft, ...nft })
-            }
+            const availableNfts = await Promise.all(
+                availableMarketItems.map(async (nft: MarketItem) => {
+                    const ownedNft: Nft = await alchemySdk.nft.getNftMetadata(
+                        nftContractInfo.address,
+                        nft.tokenId.toString()
+                    )
+                    return { ...ownedNft, ...nft }
+                })
+            )
             return availableNfts
         }
     }
 
+
     const { data: availableNfts, isLoading } = useQuery('available-nfts', getAvailableNftsOnMarket)
+
 
     return (
         <div>
@@ -48,7 +51,7 @@ function AvailableNftsOnMarket({ }: Props) {
                     <div>{nft?.rawMetadata?.description}</div>
                     <img src={nft?.rawMetadata?.image} />
                     {address !== nft?.seller &&
-                        <BuyButton marketItemId={nft?.marketItemId.toString()} price={nft?.price} />
+                        <BuyButton marketItemId={nft?.marketItemId} price={nft?.price} />
                     }
                 </div>
             ))}

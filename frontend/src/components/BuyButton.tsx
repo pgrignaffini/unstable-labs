@@ -4,7 +4,6 @@ import nftContractInfo from "../../../contracts/abi/nft.json"
 import marketplaceContractInfo from "../../../contracts/abi/marketplace.json"
 import { usePrepareContractWrite, useContractWrite, useContractEvent } from 'wagmi'
 import Link from 'next/link';
-import { ethers } from 'ethers'
 
 type Props = {
     marketItemId: string;
@@ -33,13 +32,9 @@ function BuyButton({ marketItemId, price }: Props) {
         }
     })
 
-    const clickHandler = async () => {
-        buyNft?.()
-    }
-
     return (
         <div>
-            <SolidButton text="Buy" onClick={() => clickHandler?.()} />
+            <SolidButton text="Buy" onClick={() => buyNft?.()} />
             <div className='flex justify-center mt-10'>
                 {data &&
                     <Link href={`https://mumbai.polygonscan.com/tx/${data?.hash}`}>

@@ -21,10 +21,7 @@ function CollectionSidebar({ setSelectedTab }: Props) {
             <CollectionSideBarRow title="Trending" type='rocket' onClick={() => setSelectedTab('trending')} />
             <CollectionSideBarRow title="Favorites" type='star' onClick={() => setSelectedTab('favorites')} />
             {isConnected && (
-                <>
-                    <CollectionSideBarRow title="Your NFTs" type='nfts' onClick={() => setSelectedTab('your-nfts')} />
-                    <CollectionSideBarRow title="Listed NFTs" type='nfts' onClick={() => setSelectedTab('listed-nfts')} />
-                </>
+                <CollectionSideBarRow title="Your NFTs" type='nfts' onClick={() => setSelectedTab('your-nfts')} />
             )}
             <CollectionSideBarRow title="Marketplace" type='star' onClick={() => setSelectedTab('marketplace')} />
         </div>
