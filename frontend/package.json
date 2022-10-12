@@ -17,6 +17,7 @@
     "@trpc/next": "^9.27.4",
     "@trpc/react": "^9.27.4",
     "@trpc/server": "^9.27.4",
+    "@uiball/loaders": "^1.2.6",
     "alchemy-sdk": "^2.1.0",
     "daisyui": "^2.31.0",
     "ethereum-blockies-base64": "^1.0.2",

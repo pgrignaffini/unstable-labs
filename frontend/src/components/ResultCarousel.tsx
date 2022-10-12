@@ -60,8 +60,13 @@ function ResultCarousel() {
                             </div>
                         </div>
                         <label htmlFor="result-modal" className='cursor-pointer mt-4'>
-                            <div className="font-pixel text-md text-white w-fit bg-acid py-4 px-10"
-                                onClick={() => setImageToShow(`/diffemon/${index}.png`)}>Brew</div>
+                            <div className="group flex space-x-2 items-end  w-fit bg-acid py-4 px-10"
+                                onClick={() => setImageToShow(`/diffemon/${index}.png`)}>
+                                <p className="font-pixel text-md text-white">Brew</p>
+                                <div className="group-hover:animate-tremble">
+                                    <img src="/flask.png" alt="flask" className="w-6" />
+                                </div>
+                            </div>
                         </label>
                     </div>
                 ))}

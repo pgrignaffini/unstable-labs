@@ -29,6 +29,7 @@ module.exports = {
       },
       colors: {
         'acid': '#b4e61d',
+        'dark-acid': '#354407'
       },
       backgroundImage: {
         'station': "url('/station.gif')",

@@ -7,6 +7,7 @@ import nftContractInfo from "../../../contracts/abi/nft.json"
 import { useQuery } from "react-query";
 import { useAppContext } from '../context/AppContext'
 import BuyButton from './BuyButton'
+import NFTCard from './NFTCard'
 
 type Props = {}
 
@@ -44,12 +45,10 @@ function AvailableNftsOnMarket({ }: Props) {
 
 
     return (
-        <div>
+        <div className="col-span-2 grid grid-rows-4 gap-8 grid-cols-4">
             {availableNfts?.map((nft: Nft & MarketItem, index: number) => (
                 <div key={index}>
-                    <div>{nft?.rawMetadata?.name}</div>
-                    <div>{nft?.rawMetadata?.description}</div>
-                    <img src={nft?.rawMetadata?.image} />
+                    <NFTCard nft={nft} />
                     {address !== nft?.seller &&
                         <BuyButton marketItemId={nft?.marketItemId} price={nft?.price} />
                     }

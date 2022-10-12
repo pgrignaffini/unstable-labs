@@ -13,7 +13,8 @@ type Props = {
 
 function MintButton({ image, name, description }: Props) {
 
-    const [tokenUri, setTokenUri] = React.useState<string>("")
+    const [minted, setMinted] = React.useState<boolean>(false)
+    const [isMinting, setIsMinting] = React.useState<boolean>(false)
 
     const uploadMetadataToIPFS = async () => {
         const nftJSON = {
@@ -26,7 +27,6 @@ function MintButton({ image, name, description }: Props) {
             if (response.status === 200) {
                 const pinataURL = "https://gateway.pinata.cloud/ipfs/" + response.data.IpfsHash
                 console.log("Uploaded metadata to Pinata: ", pinataURL);
-                setTokenUri(pinataURL)
                 return pinataURL;
             }
         } catch (error) {
@@ -34,23 +34,13 @@ function MintButton({ image, name, description }: Props) {
         }
     }
 
-    const { config } = usePrepareContractWrite({
+    const { write: createToken, data } = useContractWrite({
+        mode: 'recklesslyUnprepared',
         addressOrName: nftContractInfo.address,
         contractInterface: nftContractInfo.abi,
         functionName: 'mintToken',
-        args: [tokenUri],
-        onSuccess(data) {
-            console.log('Success', data)
-        },
-        onError(error) {
-            console.log('Error', error)
-        }
-    })
-
-    const { write: createToken, data } = useContractWrite({
-        ...config,
-        onSuccess(data) {
-            console.log('Token creation success', data)
+        onMutate() {
+            setIsMinting(true)
         }
     })
 
@@ -58,25 +48,32 @@ function MintButton({ image, name, description }: Props) {
         addressOrName: nftContractInfo.address,
         contractInterface: nftContractInfo.abi,
         eventName: 'TokenMinted',
-        listener: (event) => console.log("Token minted: " + event),
+        listener: (event) => {
+            console.log("Token minted: " + event)
+            setMinted(true)
+            setIsMinting(false)
+        },
     })
 
     return (
-        <div>
-            <SolidButton text="Mint" onClick={async () => {
-                await uploadMetadataToIPFS()
-                createToken?.()
-            }} />
-            <div className='flex justify-center mt-10'>
-                {data &&
+        <div className='flex flex-col space-y-2 items-center justify-center'>
+            {data &&
+                <>
+                    <p className='font-pixel text-[12px] text-gray-700'>Tx hash:</p>
                     <Link href={`https://mumbai.polygonscan.com/tx/${data?.hash}`}>
                         <a
                             target="_blank"
-                            className='font-pixel hover:underline hover:text-blue-600 cursor-pointer text-black'>
-                            {data?.hash.slice(0, 20) + "..."}</a>
+                            className='font-pixel text-[12px] hover:underline hover:text-blue-600 cursor-pointer text-black'>
+                            {data?.hash.slice(0, 25) + "..."}</a>
                     </Link>
-                }
-            </div>
+                </>
+            }
+            <SolidButton loading={isMinting} isFinished={minted} text="Mint" onClick={async () => {
+                const tokenUri = await uploadMetadataToIPFS()
+                createToken?.({
+                    recklesslySetUnpreparedArgs: [tokenUri]
+                })
+            }} />
         </div>
     )
 }

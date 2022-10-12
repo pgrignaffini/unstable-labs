@@ -2,8 +2,7 @@ import React from 'react'
 import SolidButton from "../components/SolidButton";
 import nftContractInfo from "../../../contracts/abi/nft.json"
 import marketplaceContractInfo from "../../../contracts/abi/marketplace.json"
-import { usePrepareContractWrite, useContractWrite, useContractEvent } from 'wagmi'
-import { uploadJSONToIPFS } from "../utils/pinata"
+import { usePrepareContractWrite, useContractWrite } from 'wagmi'
 import Link from 'next/link';
 
 type Props = {

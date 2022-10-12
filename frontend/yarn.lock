@@ -935,6 +935,11 @@
     "@typescript-eslint/types" "5.38.1"
     eslint-visitor-keys "^3.3.0"
 
+"@uiball/loaders@^1.2.6":
+  version "1.2.6"
+  resolved "https://registry.yarnpkg.com/@uiball/loaders/-/loaders-1.2.6.tgz#bd748a4538e16897daef6dec13dd4141efabd5c8"
+  integrity sha512-Db3be5pG9ciZa1Rxr6Iwv8bIwVP+g00m3GYQFsu3j7B9T16MpHhnGXLksuNtKlePdP3FCTFGpFrXbJz4GG/OOg==
+
 "@wagmi/core@^0.5.7":
   version "0.5.7"
   resolved "https://registry.yarnpkg.com/@wagmi/core/-/core-0.5.7.tgz#59ad5691275762e3b87c43230e56a4ee599ec2bd"
