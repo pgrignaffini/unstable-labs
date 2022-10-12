@@ -1,9 +1,9 @@
 import React from 'react'
 import SolidButton from "../components/SolidButton";
 import nftContractInfo from "../../../contracts/abi/nft.json"
-import { usePrepareContractWrite, useContractWrite, useContractEvent } from 'wagmi'
+import { useContractWrite, useContractEvent } from 'wagmi'
 import { uploadJSONToIPFS } from "../utils/pinata"
-import Link from 'next/link';
+import TxHash from './TxHash';
 
 type Props = {
     image: string;
@@ -58,15 +58,7 @@ function MintButton({ image, name, description }: Props) {
     return (
         <div className='flex flex-col space-y-2 items-center justify-center'>
             {data &&
-                <>
-                    <p className='font-pixel text-[12px] text-gray-700'>Tx hash:</p>
-                    <Link href={`https://mumbai.polygonscan.com/tx/${data?.hash}`}>
-                        <a
-                            target="_blank"
-                            className='font-pixel text-[12px] hover:underline hover:text-blue-600 cursor-pointer text-black'>
-                            {data?.hash.slice(0, 25) + "..."}</a>
-                    </Link>
-                </>
+                <TxHash hash={data?.hash} />
             }
             <SolidButton loading={isMinting} isFinished={minted} text="Mint" onClick={async () => {
                 const tokenUri = await uploadMetadataToIPFS()

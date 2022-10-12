@@ -44,7 +44,7 @@ function AvailableNftsOnMarket({ }: Props) {
     }
 
 
-    const { data: availableNfts, isLoading } = useQuery('available-nfts', getAvailableNftsOnMarket)
+    const { data: availableNfts, isLoading } = useQuery(['available-nfts', address], getAvailableNftsOnMarket)
 
     const buyModal = (
         <>
@@ -57,8 +57,8 @@ function AvailableNftsOnMarket({ }: Props) {
                             <img className='w-1/3' src={selectedNft?.rawMetadata?.image} alt="banner" />
                             <div className="flex flex-1 flex-col space-y-6">
                                 <p className='font-pixel text-sm text-black'>Price:
-                                    {parseNftPrice(selectedNft as Nft & MarketItem)}</p>
-                                {selectedNft && <BuyButton marketItemId={(selectedNft as Nft & MarketItem).marketItemId} price={(selectedNft as Nft & MarketItem).price} />}
+                                    {selectedNft && parseNftPrice(selectedNft as Nft & MarketItem)}</p>
+                                {selectedNft && selectedNft?.seller !== address && <BuyButton marketItemId={selectedNft?.marketItemId as string} price={(selectedNft as Nft & MarketItem)?.price} />}
                             </div>
                         </div>
                     </div>

@@ -9,3 +9,5 @@ export type MarketItem = {
     sold: boolean;
     canceled: boolean;
 }
+
+export type RefetchFunction = <TPageData>(options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined) => Promise<QueryObserverResult<any | undefined, unknown>> 

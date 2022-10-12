@@ -51,13 +51,13 @@ function YourNfts({ }: Props) {
         return response?.ownedNfts
     }
 
-    const { data: nfts, isLoading } = useQuery('your-nfts', getNFTs, {
+    const { data: nfts, isLoading, refetch: refetchNfts } = useQuery(['your-nfts', address], getNFTs, {
         select: (data: OwnedNft[]) => data?.filter((nft: OwnedNft) =>
             nft.contract.address.toUpperCase() === nftContractInfo.address.toUpperCase() && nft.tokenUri
         )
     })
 
-    const { data: nftsOnMarket } = useQuery('your-nfts-on-market', getOwnedNftsOnMarket)
+    const { data: nftsOnMarket, refetch: refetchNftsOnMarket } = useQuery(['your-nfts-on-market', address], getOwnedNftsOnMarket)
 
     const listingModal = (
         <>
@@ -74,7 +74,7 @@ function YourNfts({ }: Props) {
                                     className="bg-white bg-opacity-50 backdrop-blur-xl p-2
                                     outline-none font-pixel text-black placeholder:font-pixel text-sm placeholder:text-sm"
                                     onChange={(e) => setPrice(e.target.value)} />
-                                {selectedNft && <ListButton tokenId={selectedNft?.tokenId as string} price={price} />}                            </div>
+                                {selectedNft && <ListButton refetch={[refetchNfts, refetchNftsOnMarket]} tokenId={selectedNft?.tokenId as string} price={price} />}                            </div>
                         </div>
                     </div>
                 </div>
