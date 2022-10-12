@@ -11,6 +11,8 @@ import { useContractRead } from 'wagmi'
 import ListButton from './ListButton'
 import type { MarketItem } from '../../typings'
 import type { Nft } from 'alchemy-sdk'
+import CancelButton from './CancelButton'
+import { parseNftPrice } from '../utils/helpers'
 
 type Props = {}
 function YourNfts({ }: Props) {
@@ -57,7 +59,7 @@ function YourNfts({ }: Props) {
 
     const { data: nftsOnMarket } = useQuery('your-nfts-on-market', getOwnedNftsOnMarket)
 
-    return (
+    const listingModal = (
         <>
             <input type="checkbox" id="listing-modal" className="modal-toggle" />
             <div className="modal">
@@ -77,6 +79,34 @@ function YourNfts({ }: Props) {
                     </div>
                 </div>
             </div>
+        </>
+    )
+
+    const removeFromListingModal = (
+        <>
+            <input type="checkbox" id="remove-modal" className="modal-toggle" />
+            <div className="modal">
+                <div className="w-1/3">
+                    <label htmlFor="remove-modal" className="font-pixel text-2xl text-white cursor-pointer">X</label>
+                    <div className="bg-white bg-opacity-50 backdrop-blur-xl p-8">
+                        <div className="flex items-center space-x-10">
+                            <img className='w-1/3' src={selectedNft?.rawMetadata?.image} alt="banner" />
+                            <div className="flex flex-1 flex-col space-y-6">
+                                <p className='font-pixel text-sm text-black'>Price:
+                                    {parseNftPrice(selectedNft as Nft & MarketItem)}</p>
+                                {selectedNft && <CancelButton marketItemId={(selectedNft as Nft & MarketItem).marketItemId} />}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </>
+    )
+
+    return (
+        <>
+            {listingModal}
+            {removeFromListingModal}
             {isLoading ?
                 <div className="flex items-center justify-center"><Loader /></div> :
                 (
@@ -89,7 +119,7 @@ function YourNfts({ }: Props) {
                                 </label>
                             ))}
                             {nftsOnMarket?.map((nft: Nft & MarketItem, index: number) => (
-                                <label htmlFor="listing-modal" className='cursor-pointer mt-4'
+                                <label htmlFor="remove-modal" className='cursor-pointer mt-4'
                                     key={index} onClick={() => setSelectedNft(nft)}>
                                     <NFTCard nft={nft} onSale={true} />
                                 </label>

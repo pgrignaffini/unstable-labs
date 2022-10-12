@@ -11,6 +11,9 @@ type Props = {
 
 function CancelButton({ marketItemId }: Props) {
 
+    const [canceled, setCanceled] = React.useState(false)
+    const [isCanceling, setIsCanceling] = React.useState(false)
+
     const { config } = usePrepareContractWrite({
         addressOrName: marketplaceContractInfo.address,
         contractInterface: marketplaceContractInfo.abi,
@@ -26,16 +29,36 @@ function CancelButton({ marketItemId }: Props) {
 
     const { write: cancelSale, data } = useContractWrite({
         ...config,
+        onMutate() {
+            setIsCanceling(true)
+        },
         onSuccess(data) {
             console.log('Sale canceled', data)
+            setCanceled(true)
+            setIsCanceling(false)
         }
     })
 
     return (
-        <div>
-            <SolidButton text="Cancel" onClick={async () => {
-                cancelSale?.()
-            }} />
+        <div className='flex flex-col space-y-2 items-center justify-center'>
+            {data &&
+                <>
+                    <p className='font-pixel text-[12px] text-gray-700'>Tx hash:</p>
+                    <Link href={`https://mumbai.polygonscan.com/tx/${data?.hash}`}>
+                        <a
+                            target="_blank"
+                            className='font-pixel text-[12px] hover:underline hover:text-blue-600 cursor-pointer text-black'>
+                            {data?.hash.slice(0, 25) + "..."}</a>
+                    </Link>
+                </>
+            }
+            <SolidButton
+                text="Cancel"
+                isFinished={canceled}
+                loading={isCanceling}
+                onClick={async () => {
+                    cancelSale?.()
+                }} />
         </div>
     )
 }

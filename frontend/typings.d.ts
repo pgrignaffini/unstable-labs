@@ -5,7 +5,7 @@ export type MarketItem = {
     creator: string;
     seller: string;
     owner: string;
-    price: string;
+    price: { _hex: string, _isBigNumber: boolean };
     sold: boolean;
     canceled: boolean;
 }

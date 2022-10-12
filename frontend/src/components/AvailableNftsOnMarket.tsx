@@ -8,6 +8,7 @@ import { useQuery } from "react-query";
 import { useAppContext } from '../context/AppContext'
 import BuyButton from './BuyButton'
 import NFTCard from './NFTCard'
+import { parseNftPrice } from '../utils/helpers'
 
 type Props = {}
 
@@ -15,6 +16,8 @@ function AvailableNftsOnMarket({ }: Props) {
 
     const { alchemySdk } = useAppContext()
     const { address } = useAccount()
+
+    const [selectedNft, setSelectedNft] = React.useState<Nft & MarketItem | undefined>(undefined)
 
     const { data: availableMarketItems } = useContractRead({
         addressOrName: marketplaceContractInfo.address,
@@ -43,18 +46,39 @@ function AvailableNftsOnMarket({ }: Props) {
 
     const { data: availableNfts, isLoading } = useQuery('available-nfts', getAvailableNftsOnMarket)
 
+    const buyModal = (
+        <>
+            <input type="checkbox" id="buy-modal" className="modal-toggle" />
+            <div className="modal">
+                <div className="w-1/3">
+                    <label htmlFor="buy-modal" className="font-pixel text-2xl text-white cursor-pointer">X</label>
+                    <div className="bg-white bg-opacity-50 backdrop-blur-xl p-8">
+                        <div className="flex items-center space-x-10">
+                            <img className='w-1/3' src={selectedNft?.rawMetadata?.image} alt="banner" />
+                            <div className="flex flex-1 flex-col space-y-6">
+                                <p className='font-pixel text-sm text-black'>Price:
+                                    {parseNftPrice(selectedNft as Nft & MarketItem)}</p>
+                                {selectedNft && <BuyButton marketItemId={(selectedNft as Nft & MarketItem).marketItemId} price={(selectedNft as Nft & MarketItem).price} />}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </>
+    )
 
     return (
-        <div className="col-span-2 grid grid-rows-4 gap-8 grid-cols-4">
-            {availableNfts?.map((nft: Nft & MarketItem, index: number) => (
-                <div key={index}>
-                    <NFTCard nft={nft} />
-                    {address !== nft?.seller &&
-                        <BuyButton marketItemId={nft?.marketItemId} price={nft?.price} />
-                    }
-                </div>
-            ))}
-        </div>
+        <>
+            {buyModal}
+            <div className="col-span-2 grid grid-rows-4 gap-8 grid-cols-4">
+                {availableNfts?.map((nft: Nft & MarketItem, index: number) => (
+                    <label htmlFor="buy-modal" className='cursor-pointer mt-4'
+                        key={index} onClick={() => setSelectedNft(nft)}>
+                        <NFTCard nft={nft} onSale={true} />
+                    </label>
+                ))}
+            </div>
+        </>
     )
 }
 

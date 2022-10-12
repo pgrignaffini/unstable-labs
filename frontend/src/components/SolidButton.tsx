@@ -18,7 +18,10 @@ function SolidButton({ text, onClick, width, loading, isFinished }: Props) {
     <>
       {isFinished ?
         <div className='bg-dark-acid py-4 px-10 w-fit'>
-          <p className='font-pixel text-md text-white'>{`${text}ed`}</p>
+          <p className='font-pixel text-md text-white'>{
+            text === 'Buy' ? 'Bought' : text === 'Cancel' ? 'Listing Cancelled' :
+              `${text}ed`
+          }</p>
         </div>
         : <button type="button" className={`relative font-pixel text-md text-white ${width}`} onPointerOver={() => setClicked(false)} onClick={() => {
           setClicked(true)

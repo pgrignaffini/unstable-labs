@@ -18,8 +18,8 @@ function CollectionSidebar({ setSelectedTab }: Props) {
 
     return (
         <div className='flex flex-col col-span-2 items-center space-y-8 w-fit md:items-start border-r-2 border-b-2'>
-            <CollectionSideBarRow title="Trending" type='rocket' onClick={() => setSelectedTab('trending')} />
-            <CollectionSideBarRow title="Favorites" type='star' onClick={() => setSelectedTab('favorites')} />
+            {/* <CollectionSideBarRow title="Trending" type='rocket' onClick={() => setSelectedTab('trending')} />
+            <CollectionSideBarRow title="Favorites" type='star' onClick={() => setSelectedTab('favorites')} /> */}
             {isConnected && (
                 <CollectionSideBarRow title="Your NFTs" type='nfts' onClick={() => setSelectedTab('your-nfts')} />
             )}

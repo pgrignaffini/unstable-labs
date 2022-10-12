@@ -3,6 +3,7 @@ import Star from './icons/Star'
 import StarFilled from './icons/StarFilled'
 import { Nft } from "alchemy-sdk";
 import { MarketItem } from '../../typings';
+import { parseNftPrice } from '../utils/helpers';
 import CancelButton from './CancelButton';
 
 type Props = {
@@ -11,22 +12,22 @@ type Props = {
 }
 
 function NFTCard({ nft, onSale }: Props) {
+
     return (
-        <div className='border-2 p-4 cursor-pointer'>
-            <img src={nft?.rawMetadata?.image} alt="barrel" />
-            <div className='flex mt-6 justify-between items-center'>
-                <p className='font-pixel'>{nft?.title}</p>
-                {/* <Star />
-                <StarFilled /> */}
-            </div>
-            {onSale &&
-                <div className='flex flex-col space-y-2'>
-                    <div className='p-1 bg-acid w-fit mt-2'>
-                        <p className='font-pixel text-[10px] text-white'>On Sale</p>
-                    </div>
-                    <CancelButton marketItemId={(nft as Nft & MarketItem).marketItemId} />
+        <div className='border-2 cursor-pointer'>
+            {
+                onSale &&
+                <div className='relative top-0 right-0 p-1 bg-acid w-fit font-pixel text-[10px] text-white'>
+                    On Sale
                 </div>
             }
+            <div className={`px-4 ${onSale ? "py-2" : "py-5"} `}>
+                <img className='w-64 object-fit hover:scale-125 transition-all ease-in-out' src={nft?.rawMetadata?.image} alt="image" />
+                <div className='flex justify-between'>
+                    <p className='font-pixel text-sm'>{nft?.title}</p>
+                    {onSale && <p className='font-pixel text-sm'>{parseNftPrice(nft as Nft & MarketItem)}</p>}
+                </div>
+            </div>
         </div>
     )
 }
