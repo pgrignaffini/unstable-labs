@@ -15,8 +15,6 @@ contract Marketplace is ReentrancyGuard, Ownable {
     Counters.Counter private _tokensSold;
     Counters.Counter private _tokensCanceled;
 
-    address payable private owner;
-
     // Challenge: make this price dynamic according to the current currency price
     uint256 private listingFee = 0.045 ether;
 
@@ -66,9 +64,7 @@ contract Marketplace is ReentrancyGuard, Ownable {
         bool canceled
     );
 
-    constructor() {
-        owner = payable(msg.sender);
-    }
+    constructor() {}
 
     function getListingFee() public view returns (uint256) {
         return listingFee;
@@ -83,8 +79,8 @@ contract Marketplace is ReentrancyGuard, Ownable {
         for (uint256 i = 0; i < number; i++) {
             uint256 tokenId = VialNFT(vialContractAddress).mintVial(tokenURI);
             tokenIds[i] = tokenId;
+            createMarketItem(vialContractAddress, tokenId, 0.01 ether);
         }
-
         return tokenIds;
     }
 
@@ -239,7 +235,7 @@ contract Marketplace is ReentrancyGuard, Ownable {
 
         _tokensSold.increment();
 
-        payable(owner).transfer(listingFee);
+        payable(owner()).transfer(listingFee);
 
         emit MarketItemSold(
             marketItemId,

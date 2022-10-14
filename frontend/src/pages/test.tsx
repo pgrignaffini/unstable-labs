@@ -1,47 +1,77 @@
-import React, { useState } from 'react'
-import MintButton from '../components/MintButton'
-
-type Props = {}
-
-import { Alchemy, Network } from "alchemy-sdk";
+import React from 'react'
+import { uploadJSONToIPFS } from "../utils/pinata"
+import { useContractWrite, useContractEvent } from 'wagmi'
+import vialContractInfo from "../../../contracts/abi/vialNFT.json"
+import marketplaceContractInfo from "../../../contracts/abi/marketplace.json"
 import SolidButton from '../components/SolidButton';
+import TxHash from '../components/TxHash'
 
-const config = {
-    apiKey: process.env.ALCHEMY_API_KEY,
-    network: Network.MATIC_MUMBAI,
-};
-const alchemy = new Alchemy(config);
+function TestPage() {
 
-function TestPage({ }: Props) {
+    const ipfsImageCID = "https://gateway.ipfs.io/ipfs/QmWUQvTRUVmtBznRdrr9f9a5BHqrpgSzgrKi2GNYfojcTm"
+    const [minted, setMinted] = React.useState<boolean>(false)
+    const [isMinting, setIsMinting] = React.useState<boolean>(false)
 
-    const address = process.env.NEXT_PUBLIC_MINT_CONTRACT_ADDRESS;
-    const omitMetadata = false;
-    const [collectibles, setCollectibles] = useState<any[]>([]);
-
-    const getNFTs = async () => {
-        const response = await alchemy.nft.getNftsForContract(address, {
-            omitMetadata: omitMetadata,
-        });
-        setCollectibles(response?.nfts);
-        console.log(JSON.stringify(response, null, 2));
+    const uploadMetadataToIPFS = async () => {
+        const nftJSON = {
+            name: "Creation Vial",
+            description: "A vial containing a special fluid. Use it to brew new NFTs.",
+            image: ipfsImageCID,
+        }
+        try {
+            const response = await uploadJSONToIPFS(nftJSON);
+            if (response.status === 200) {
+                const pinataURL = "https://gateway.pinata.cloud/ipfs/" + response.data.IpfsHash
+                console.log("Uploaded metadata to Pinata: ", pinataURL);
+                return pinataURL;
+            }
+        } catch (error) {
+            console.log("Error uploading metadata to Pinata: ", error);
+        }
     }
+
+    // const { write: createVials, data } = useContractWrite({
+    //     mode: 'recklesslyUnprepared',
+    //     addressOrName: marketplaceContractInfo.address,
+    //     contractInterface: marketplaceContractInfo.abi,
+    //     functionName: 'createVials',
+    //     onMutate() {
+    //         setIsMinting(true)
+    //     }
+    // })
+
+    const { write: createVial, data } = useContractWrite({
+        mode: 'recklesslyUnprepared',
+        addressOrName: vialContractInfo.address,
+        contractInterface: vialContractInfo.abi,
+        functionName: 'mintVial',
+        onMutate() {
+            setIsMinting(true)
+        }
+    })
+
+    useContractEvent({
+        addressOrName: vialContractInfo.address,
+        contractInterface: vialContractInfo.abi,
+        eventName: 'VialMinted',
+        listener: (event) => {
+            console.log("Vial minted: " + event)
+            setMinted(true)
+            setIsMinting(false)
+        },
+    })
 
     return (
         <div className='h-screen flex justify-center items-center'>
-            <div className='flex flex-col space-y-6'>
-                <SolidButton text="Get NFTs" onClick={() => getNFTs()} />
-                <div className='flex spae-x-4'>
-                    {
-                        collectibles?.map((collectible, index) => (
-                            <div key={index} className='flex flex-col space-y-2'>
-                                <p>{collectible?.title}:{collectible?.tokenId}</p>
-                                <p>{collectible?.description}</p>
-                                <img src={collectible?.rawMetadata?.image} />
-                            </div>
-                        ))
-                    }
-                </div>
-            </div>
+            {data &&
+                <TxHash hash={data?.hash} />
+            }
+            <SolidButton loading={isMinting} isFinished={minted} text="Mint" onClick={async () => {
+                const tokenUri = await uploadMetadataToIPFS()
+                createVial?.({
+                    recklesslySetUnpreparedArgs: [tokenUri]
+                })
+            }} />
         </div>
     )
 }

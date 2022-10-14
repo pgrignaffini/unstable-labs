@@ -22,7 +22,7 @@ contract VialNFT is ERC721URIStorage {
 
     event VialBurned(uint256 indexed tokenId);
 
-    constructor(address _marketplaceAddress) ERC721("UnstableLabs", "ULABS") {
+    constructor(address _marketplaceAddress) ERC721("UnstableVials", "UVIALS") {
         marketplaceAddress = _marketplaceAddress;
     }
 

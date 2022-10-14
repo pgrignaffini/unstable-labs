@@ -19,7 +19,9 @@ contract NFT is ERC721URIStorage {
         address marketplaceAddress
     );
 
-    constructor(address _marketplaceAddress) ERC721("UnstableLabs", "ULABS") {
+    constructor(address _marketplaceAddress)
+        ERC721("UnstableExperiments", "UEXP")
+    {
         marketplaceAddress = _marketplaceAddress;
     }
 

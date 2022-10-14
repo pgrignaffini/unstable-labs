@@ -7,6 +7,7 @@ import NFTCard from '../components/NFTCard'
 import { useAccount } from "wagmi"
 import nftContractInfo from "../../../contracts/abi/nft.json"
 import marketplaceContractInfo from "../../../contracts/abi/marketplace.json"
+import vialNftContractInfo from "../../../contracts/abi/vialNFT.json"
 import { useContractRead } from 'wagmi'
 import ListButton from './ListButton'
 import type { MarketItem } from '../../typings'
@@ -53,7 +54,9 @@ function YourNfts({ }: Props) {
 
     const { data: nfts, isLoading, refetch: refetchNfts } = useQuery(['your-nfts', address], getNFTs, {
         select: (data: OwnedNft[]) => data?.filter((nft: OwnedNft) =>
-            nft.contract.address.toUpperCase() === nftContractInfo.address.toUpperCase() && nft.tokenUri
+            (nft.contract.address.toUpperCase() === nftContractInfo.address.toUpperCase() ||
+                nft.contract.address.toUpperCase() === vialNftContractInfo.address.toUpperCase()
+            ) && nft.tokenUri
         )
     })
 
