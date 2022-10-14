@@ -1,0 +1,64 @@
+{
+    "diffemon": [
+        {
+            "id": 1,
+            "name": "Corgichu",
+            "description": "This creature is very independent and has a strong sense of self. They are confident and usually make their own decisions without input from others. They can be impulsive and act on instinct rather than logic, but they are also fiercely loyal and will protect their friends and family with their lives.",
+            "image": "bafybeid6nfss3k5dwcfvo2x5dzfug6d3lszgm2vaasaoobtd2wulpxrjkm/0.png"
+        },
+        {
+            "id": 2,
+            "name": "Gibble",
+            "description": "This creature is a loner who prefers to keep to itself. It is not outgoing or particularly friendly, but it is not unfriendly either. It is calm and collected, and has a good head on its shoulders. It is not easily rattled, and is able to think clearly even in the most chaotic of situations. This creature is also very intelligent, and is always able to see the bigger picture.",
+            "image": "bafybeid6nfss3k5dwcfvo2x5dzfug6d3lszgm2vaasaoobtd2wulpxrjkm/1.png"
+        },
+        {
+            "id": 3,
+            "name": "Snizen",
+            "description": "This creature is a loner by nature, and prefers to keep to itself most of the time. It's not really a pro-social creature, and would rather avoid other creatures if it can help it. It's not necessarily a hostile creature, but it's not really one that's looking to make friends either. It's generally just trying to get by and stay out of trouble.",
+            "image": "bafybeid6nfss3k5dwcfvo2x5dzfug6d3lszgm2vaasaoobtd2wulpxrjkm/2.png"
+        },
+        {
+            "id": 4,
+            "name": "Quiggle",
+            "description": "This creature is brave and determined, always ready to face a challenge. It has a strong sense of justice and a deep loyalty to its friends and allies. Although it can be impulsive and headstrong at times, this creature is always quick to apologize if it has acted rashly.",
+            "image": "bafybeid6nfss3k5dwcfvo2x5dzfug6d3lszgm2vaasaoobtd2wulpxrjkm/3.png"
+        },
+        {
+            "id": 5,
+            "name": "Drumplenose",
+            "description": "This creature is a timid and gentle soul, who is easily frightened and prone to fits of crying. They are kindhearted and easily forgiven, but their lack of courage can be a flaw.",
+            "image": "bafybeid6nfss3k5dwcfvo2x5dzfug6d3lszgm2vaasaoobtd2wulpxrjkm/4.png"
+        },
+        {
+            "id": 6,
+            "name": "Beebo",
+            "description": "This creature is very shy and withdrawn, preferring to stay in the background and let others take the lead. They are gentle and kind-hearted, but can be easily overwhelmed by loud noises or aggressive behaviour. They are loyal and protective of those they care for, and have a deep love of nature and the peace it brings.",
+            "image": "bafybeid6nfss3k5dwcfvo2x5dzfug6d3lszgm2vaasaoobtd2wulpxrjkm/5.png"
+        },
+        {
+            "id": 7,
+            "name": "Flern",
+            "description": "This creature is very shy and reserved, preferring to stay in the background and observe others rather than engage in social interaction. It is intelligent and quick-witted, able to size up a situation and figure out the best course of action. This creature is also patient and level-headed, able to maintain a cool head even in the face of adversity.",
+            "image": "bafybeid6nfss3k5dwcfvo2x5dzfug6d3lszgm2vaasaoobtd2wulpxrjkm/6.png"
+        },
+        {
+            "id": 8,
+            "name": "Snigglet",
+            "description": "This creature is a loner who is content to while away its days in solitude. It is fiercely independent and has a sharp tongue, but is also fiercely loyal to its friends. It is quick to anger, but just as quick to forgive. It is a survivor, and has an unyielding determination.",
+            "image": "bafybeid6nfss3k5dwcfvo2x5dzfug6d3lszgm2vaasaoobtd2wulpxrjkm/7.png"
+        },
+        {
+            "id": 9,
+            "name": "Fuzzle",
+            "description": "This creature is outgoing and loves to socialize. It is always looking for new friends and experiences, and loves nothing more than a good party. It is also fiercely loyal to those it considers family or friends, and will go to great lengths to protect them.",
+            "image": "bafybeid6nfss3k5dwcfvo2x5dzfug6d3lszgm2vaasaoobtd2wulpxrjkm/8.png"
+        },
+        {
+            "id": 10,
+            "name": "Furp",
+            "description": "This creature is a brave and determined fighter who never backs down from a challenge. They are also fiercely loyal to their friends and allies, and will do whatever it takes to protect them.",
+            "image": "bafybeid6nfss3k5dwcfvo2x5dzfug6d3lszgm2vaasaoobtd2wulpxrjkm/9.png"
+        }
+    ]
+}

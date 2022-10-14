@@ -3,10 +3,12 @@ pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "./NFT.sol";
+import "./VialNFT.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract Marketplace is ReentrancyGuard {
+contract Marketplace is ReentrancyGuard, Ownable {
     using Counters for Counters.Counter;
 
     Counters.Counter private _marketItemIds;
@@ -44,12 +46,53 @@ contract Marketplace is ReentrancyGuard {
         bool canceled
     );
 
+    event MarketItemCanceled(
+        uint256 indexed marketItemId,
+        address indexed nftContract,
+        uint256 indexed tokenId,
+        bool sold,
+        bool canceled
+    );
+
+    event MarketItemSold(
+        uint256 indexed marketItemId,
+        address indexed nftContract,
+        uint256 indexed tokenId,
+        address creator,
+        address seller,
+        address owner,
+        uint256 price,
+        bool sold,
+        bool canceled
+    );
+
     constructor() {
         owner = payable(msg.sender);
     }
 
     function getListingFee() public view returns (uint256) {
         return listingFee;
+    }
+
+    function createVials(
+        string memory tokenURI,
+        address vialContractAddress,
+        uint256 number
+    ) public onlyOwner returns (uint256[] memory) {
+        uint256[] memory tokenIds = new uint256[](number);
+        for (uint256 i = 0; i < number; i++) {
+            uint256 tokenId = VialNFT(vialContractAddress).mintVial(tokenURI);
+            tokenIds[i] = tokenId;
+        }
+
+        return tokenIds;
+    }
+
+    function burnVial(address vialContractAddress, uint256 tokenId)
+        public
+        onlyOwner
+    {
+        VialNFT(vialContractAddress).burnVial(tokenId);
     }
 
     /**
@@ -68,8 +111,14 @@ contract Marketplace is ReentrancyGuard {
         );
         _marketItemIds.increment();
         uint256 marketItemId = _marketItemIds.current();
+        address creator;
 
-        address creator = NFT(nftContractAddress).getTokenCreatorById(tokenId);
+        try NFT(nftContractAddress).getTokenCreatorById(tokenId) {
+            creator = NFT(nftContractAddress).getTokenCreatorById(tokenId);
+        } catch {
+            // it's a VialNFT, creator is the marketplace
+            creator = address(this);
+        }
 
         marketItemIdToMarketItem[marketItemId] = MarketItem(
             marketItemId,
@@ -130,6 +179,14 @@ contract Marketplace is ReentrancyGuard {
         marketItemIdToMarketItem[marketItemId].canceled = true;
 
         _tokensCanceled.increment();
+
+        emit MarketItemCanceled(
+            marketItemId,
+            nftContractAddress,
+            tokenId,
+            false,
+            true
+        );
     }
 
     /**
@@ -183,6 +240,18 @@ contract Marketplace is ReentrancyGuard {
         _tokensSold.increment();
 
         payable(owner).transfer(listingFee);
+
+        emit MarketItemSold(
+            marketItemId,
+            nftContractAddress,
+            tokenId,
+            marketItemIdToMarketItem[marketItemId].creator,
+            marketItemIdToMarketItem[marketItemId].seller,
+            marketItemIdToMarketItem[marketItemId].owner,
+            price,
+            true,
+            false
+        );
     }
 
     /**

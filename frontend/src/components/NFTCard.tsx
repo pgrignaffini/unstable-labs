@@ -22,7 +22,7 @@ function NFTCard({ nft, onSale }: Props) {
                 </div>
             }
             <div className={`px-4 ${onSale ? "py-2" : "py-5"} `}>
-                <img className='w-64 object-fit hover:scale-125 transition-all ease-in-out' src={nft?.rawMetadata?.image} alt="image" />
+                <img className='w-64 h-64 object-contain' src={nft?.rawMetadata?.image} alt="image" />
                 <div className='flex justify-between'>
                     <p className='font-pixel text-sm'>{nft?.title}</p>
                     {onSale && <p className='font-pixel text-sm'>{parseNftPrice(nft as Nft & MarketItem)}</p>}

@@ -1,11 +1,26 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import ResultCarousel from "../components/ResultCarousel";
-import { trpc } from "../utils/trpc";
-import dynamic from 'next/dynamic'
+import { useQuery } from "react-query";
 import SolidButton from "../components/SolidButton";
+import axios from "axios";
+import { useNetwork, useSwitchNetwork } from 'wagmi'
 
 const Home: NextPage = () => {
+
+  const network = useSwitchNetwork({
+    chainId: 80001,
+  })
+
+  const fetchImages = async () => {
+    const res = await axios.get('http://localhost:3001/diffemon');
+    console.log(res)
+    return res.data;
+  }
+
+  const { data: images, isLoading, refetch } = useQuery(['images'], fetchImages, {
+    enabled: false
+  });
 
   return (
     <>
@@ -29,16 +44,15 @@ const Home: NextPage = () => {
         <div className="bg-gray-400 p-6 w-2/3 mx-auto mt-16 row-start-3 col-start-3">
           <div className="flex space-x-5">
             <input type="text" className="w-full p-4 placeholder:font-pixel text-black outline-none font-pixel" placeholder="Enter your description" />
-            <SolidButton text="Brew" />
+            <SolidButton text="Brew" onClick={() => refetch()} />
           </div>
         </div>
-
-        <div className="flex justify-center mt-8">
+        {isLoading && <div className="flex justify-center mt-8">
           <img src="/flask-combining.gif" alt="loading" className="w-64" />
-        </div>
-        <div className="w-full mt-24">
-          <ResultCarousel />
-        </div>
+        </div>}
+        {images && <div className="w-full mt-24">
+          <ResultCarousel images={images} />
+        </div>}
         <div className="mt-24 flex space-x-4">
           <img src="/barrel-toxic.gif" alt="barrel" className="w-24" />
           <img src="/barrels.png" alt="barrels" className="w-56" />

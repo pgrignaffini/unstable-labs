@@ -1,10 +1,13 @@
-import Diffemon from "../../data/Diffemon.json"
 import React, { useState } from 'react'
 import MintButton from "./MintButton"
+import type { GeneratedImage } from "../../typings"
 
-function ResultCarousel() {
+type Props = {
+    images: GeneratedImage[]
+}
 
-    const imageUrl = "https://ipfs.io/ipfs/QmSsYRx3LpDAb1GZQm7zZ1AuHZjfbPkD6J7s9r41xu1mf8?filename=pug.png"
+function ResultCarousel({ images }: Props) {
+
     const [imageToShow, setImageToShow] = useState<string>("")
     const [name, setName] = useState<string>("")
     const [description, setDescription] = useState<string>("")
@@ -24,6 +27,7 @@ function ResultCarousel() {
                     <label htmlFor="result-modal" className="font-pixel text-2xl text-white cursor-pointer" onClick={() => {
                         setName("")
                         setDescription("")
+                        setImageToShow("")
                     }}>X</label>
                     <div className="bg-white bg-opacity-50 backdrop-blur-xl p-8">
                         <div className="flex items-start space-x-10">
@@ -42,7 +46,7 @@ function ResultCarousel() {
                                   outline-none text-black font-pixel placeholder:font-pixel text-sm placeholder:text-sm"
                                     placeholder="Enter description..." onChange={(e) => setDescription(e.target.value)} />
                                 <div className="mx-auto">
-                                    <MintButton image={imageUrl} name={name} description={description} />
+                                    <MintButton image={imageToShow} name={name} description={description} />
                                 </div>
                             </form>
                         </div>
@@ -50,18 +54,18 @@ function ResultCarousel() {
                 </div>
             </div>
             <div className='bg-gray-400 p-4 overflow-x-auto flex space-x-4'>
-                {Diffemon.map((_, index: number) => (
+                {images?.map((image: GeneratedImage, index: number) => (
                     <div className="flex flex-col space-y-4 items-center " key={index}>
-                        <div onClick={() => setImageToShow(`/diffemon/${index}.png`)}>
+                        <div onClick={() => setImageToShow(`https://gateway.ipfs.io/ipfs/${image.image}`)}>
                             <div className='bg-gray-200 p-4 w-60 h-124 flex-none shadow-xl'>
                                 <label htmlFor="zoom-modal" className='cursor-pointer'>
-                                    <img src={`/diffemon/${index}.png`} />
+                                    <img src={`https://gateway.ipfs.io/ipfs/${image.image}`} />
                                 </label>
                             </div>
                         </div>
                         <label htmlFor="result-modal" className='cursor-pointer mt-4'>
                             <div className="group flex space-x-2 items-end  w-fit bg-acid py-4 px-10"
-                                onClick={() => setImageToShow(`/diffemon/${index}.png`)}>
+                                onClick={() => setImageToShow(`https://gateway.ipfs.io/ipfs/${image.image}`)}>
                                 <p className="font-pixel text-md text-white">Brew</p>
                                 <div className="group-hover:animate-tremble">
                                     <img src="/flask.png" alt="flask" className="w-6" />

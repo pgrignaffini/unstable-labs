@@ -20,4 +20,9 @@ export default defineNextConfig({
     locales: ["en"],
     defaultLocale: "en",
   },
+  images: {
+    domains: [
+      "ipfs://bafybeid6nfss3k5dwcfvo2x5dzfug6d3lszgm2vaasaoobtd2wulpxrjkm/*",
+    ],
+  },
 });

@@ -10,4 +10,11 @@ export type MarketItem = {
     canceled: boolean;
 }
 
-export type RefetchFunction = <TPageData>(options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined) => Promise<QueryObserverResult<any | undefined, unknown>> 
+export type RefetchFunction = <TPageData>(options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined) => Promise<QueryObserverResult<any | undefined, unknown>>
+
+export type GeneratedImage = {
+    id: number;
+    name: string;
+    description: string;
+    image: string;
+}

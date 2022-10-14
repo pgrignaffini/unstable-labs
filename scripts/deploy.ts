@@ -1,23 +1,49 @@
-import { ethers } from "hardhat";
+const { ethers } = require("hardhat");
+const hre = require("hardhat");
+const fs = require("fs");
 
 async function main() {
-  const currentTimestampInSeconds = Math.round(Date.now() / 1000);
-  const ONE_YEAR_IN_SECS = 365 * 24 * 60 * 60;
-  const unlockTime = currentTimestampInSeconds + ONE_YEAR_IN_SECS;
+  const [deployer] = await ethers.getSigners();
+  const balance = await deployer.getBalance();
+  const Marketplace = await hre.ethers.getContractFactory("Marketplace");
+  const marketplace = await Marketplace.deploy();
 
-  const lockedAmount = ethers.utils.parseEther("1");
+  await marketplace.deployed();
 
-  const Lock = await ethers.getContractFactory("Lock");
-  const lock = await Lock.deploy(unlockTime, { value: lockedAmount });
+  const marketplaceData = {
+    address: marketplace.address,
+    abi: JSON.parse(marketplace.interface.format('json'))
+  }
 
-  await lock.deployed();
+  //This writes the ABI and address to the mktplace.json
+  fs.writeFileSync('./contracts/abi/marketplace.json', JSON.stringify(marketplaceData))
 
-  console.log(`Lock with 1 ETH and unlock timestamp ${unlockTime} deployed to ${lock.address}`);
+  const NFT = await hre.ethers.getContractFactory("NFT");
+  const nft = await NFT.deploy(marketplace.address);
+  const VialNFT = await hre.ethers.getContractFactory("VialNFT");
+  const vialNFT = await VialNFT.deploy(marketplace.address);
+
+  await nft.deployed();
+  await vialNFT.deployed();
+
+  const nftData = {
+    address: nft.address,
+    abi: JSON.parse(nft.interface.format('json'))
+  }
+
+  const vialNftData = {
+    address: vialNFT.address,
+    abi: JSON.parse(vialNFT.interface.format('json'))
+  }
+
+  //This writes the ABI and address to the mktplace.json
+  fs.writeFileSync('./contracts/abi/nft.json', JSON.stringify(nftData))
+  fs.writeFileSync('./contracts/abi/vialNFT.json', JSON.stringify(vialNftData))
 }
 
-// We recommend this pattern to be able to use async/await everywhere
-// and properly handle errors.
-main().catch((error) => {
-  console.error(error);
-  process.exitCode = 1;
-});
+main()
+  .then(() => process.exit(0))
+  .catch((error) => {
+    console.error(error);
+    process.exit(1);
+  });

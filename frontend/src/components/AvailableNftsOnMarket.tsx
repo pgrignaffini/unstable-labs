@@ -58,7 +58,7 @@ function AvailableNftsOnMarket({ }: Props) {
                             <div className="flex flex-1 flex-col space-y-6">
                                 <p className='font-pixel text-sm text-black'>Price:
                                     {selectedNft && parseNftPrice(selectedNft as Nft & MarketItem)}</p>
-                                {selectedNft && selectedNft?.seller !== address && <BuyButton marketItemId={selectedNft?.marketItemId as string} price={(selectedNft as Nft & MarketItem)?.price} />}
+                                {selectedNft?.seller !== address && <BuyButton marketItemId={selectedNft?.marketItemId as string} price={(selectedNft as Nft & MarketItem)?.price} />}
                             </div>
                         </div>
                     </div>
