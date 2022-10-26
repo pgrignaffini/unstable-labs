@@ -92,5 +92,9 @@ describe("Marketplace contract", function () {
 
         expect(uri_one).to.equal("https://www.mytokenURI.com");
         expect(uri_two).to.equal("https://www.mytokenURI2.com");
+
+        const uris = await nft.getTokenURIs(myTokenIds);
+        expect(uris[0]).to.equal("https://www.mytokenURI.com");
+        expect(uris[1]).to.equal("https://www.mytokenURI2.com");
     })
 });
