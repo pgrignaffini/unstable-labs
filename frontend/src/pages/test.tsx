@@ -30,15 +30,15 @@ function TestPage() {
         }
     }
 
-    // const { write: createVials, data } = useContractWrite({
-    //     mode: 'recklesslyUnprepared',
-    //     addressOrName: marketplaceContractInfo.address,
-    //     contractInterface: marketplaceContractInfo.abi,
-    //     functionName: 'createVials',
-    //     onMutate() {
-    //         setIsMinting(true)
-    //     }
-    // })
+    const { write: createVials, data: vials } = useContractWrite({
+        mode: 'recklesslyUnprepared',
+        addressOrName: marketplaceContractInfo.address,
+        contractInterface: marketplaceContractInfo.abi,
+        functionName: 'createVials',
+        onMutate() {
+            setIsMinting(true)
+        }
+    })
 
     const { write: createVial, data } = useContractWrite({
         mode: 'recklesslyUnprepared',
@@ -68,8 +68,8 @@ function TestPage() {
             }
             <SolidButton loading={isMinting} isFinished={minted} text="Mint" onClick={async () => {
                 const tokenUri = await uploadMetadataToIPFS()
-                createVial?.({
-                    recklesslySetUnpreparedArgs: [tokenUri]
+                createVials?.({
+                    recklesslySetUnpreparedArgs: [tokenUri, vialContractInfo.address, 2]
                 })
             }} />
         </div>

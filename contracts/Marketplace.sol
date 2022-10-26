@@ -7,6 +7,7 @@ import "./VialNFT.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "hardhat/console.sol";
 
 contract Marketplace is ReentrancyGuard, Ownable {
     using Counters for Counters.Counter;
@@ -15,8 +16,9 @@ contract Marketplace is ReentrancyGuard, Ownable {
     Counters.Counter private _tokensSold;
     Counters.Counter private _tokensCanceled;
 
-    // Challenge: make this price dynamic according to the current currency price
-    uint256 private listingFee = 0.045 ether;
+    address private marketplaceOwner;
+
+    uint256[] public vialIds;
 
     mapping(uint256 => MarketItem) private marketItemIdToMarketItem;
 
@@ -64,24 +66,30 @@ contract Marketplace is ReentrancyGuard, Ownable {
         bool canceled
     );
 
-    constructor() {}
+    constructor() {
+        marketplaceOwner = msg.sender;
+    }
 
-    function getListingFee() public view returns (uint256) {
-        return listingFee;
+    function getOwner () public view returns (address) {
+        return marketplaceOwner;
     }
 
     function createVials(
         string memory tokenURI,
-        address vialContractAddress,
-        uint256 number
-    ) public onlyOwner returns (uint256[] memory) {
-        uint256[] memory tokenIds = new uint256[](number);
+        uint256 number,
+        address _vialNFTAddress
+    ) public {
+        require(msg.sender == marketplaceOwner, "Only marketplace owner can mint vials");
+        VialNFT vialNFT = VialNFT(_vialNFTAddress);
         for (uint256 i = 0; i < number; i++) {
-            uint256 tokenId = VialNFT(vialContractAddress).mintVial(tokenURI);
-            tokenIds[i] = tokenId;
-            createMarketItem(vialContractAddress, tokenId, 0.01 ether);
+            uint256 tokenId = vialNFT.mintVial(tokenURI);
+            vialIds.push(tokenId);
+            createMarketItem(_vialNFTAddress, tokenId, 0.01 ether, true);
         }
-        return tokenIds;
+    }
+
+    function getVialIds () public view returns (uint256[] memory) {
+        return vialIds;
     }
 
     function burnVial(address vialContractAddress, uint256 tokenId)
@@ -98,22 +106,18 @@ contract Marketplace is ReentrancyGuard, Ownable {
     function createMarketItem(
         address nftContractAddress,
         uint256 tokenId,
-        uint256 price
+        uint256 price,
+        bool isVial
     ) public payable nonReentrant returns (uint256) {
         require(price > 0, "Price must be at least 1 wei");
-        require(
-            msg.value == listingFee,
-            "Price must be equal to listing price"
-        );
         _marketItemIds.increment();
         uint256 marketItemId = _marketItemIds.current();
         address creator;
 
-        try NFT(nftContractAddress).getTokenCreatorById(tokenId) {
-            creator = NFT(nftContractAddress).getTokenCreatorById(tokenId);
-        } catch {
-            // it's a VialNFT, creator is the marketplace
+        if (isVial) {
             creator = address(this);
+        } else {
+            creator = NFT(nftContractAddress).getTokenCreatorById(tokenId);
         }
 
         marketItemIdToMarketItem[marketItemId] = MarketItem(
@@ -128,11 +132,14 @@ contract Marketplace is ReentrancyGuard, Ownable {
             false
         );
 
-        IERC721(nftContractAddress).transferFrom(
-            msg.sender,
-            address(this),
-            tokenId
-        );
+
+        if (!isVial) {
+            IERC721(nftContractAddress).transferFrom(
+                msg.sender,
+                address(this),
+                tokenId
+            );
+        }
 
         emit MarketItemCreated(
             marketItemId,
@@ -234,8 +241,6 @@ contract Marketplace is ReentrancyGuard, Ownable {
         );
 
         _tokensSold.increment();
-
-        payable(owner()).transfer(listingFee);
 
         emit MarketItemSold(
             marketItemId,

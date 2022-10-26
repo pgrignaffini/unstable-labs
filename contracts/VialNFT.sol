@@ -4,8 +4,7 @@ pragma solidity ^0.8.4;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
-
-// import "@openzeppelin/contracts/access/Ownable.sol";
+import "hardhat/console.sol";
 
 // TO DO: Explain the reason/advantadge to use ERC721URIStorage instead of ERC721 itself
 contract VialNFT is ERC721URIStorage {
@@ -16,13 +15,12 @@ contract VialNFT is ERC721URIStorage {
 
     event VialMinted(
         uint256 indexed tokenId,
-        string tokenURI,
-        address marketplaceAddress
+        string tokenURI
     );
 
     event VialBurned(uint256 indexed tokenId);
 
-    constructor(address _marketplaceAddress) ERC721("UnstableVials", "UVIALS") {
+    constructor( address _marketplaceAddress) ERC721("UnstableVials", "UVIALS") {
         marketplaceAddress = _marketplaceAddress;
     }
 
@@ -33,10 +31,7 @@ contract VialNFT is ERC721URIStorage {
         _mint(msg.sender, newItemId);
         _setTokenURI(newItemId, tokenURI);
 
-        // Give the marketplace approval to transact NFTs between users
-        setApprovalForAll(marketplaceAddress, true);
-
-        emit VialMinted(newItemId, tokenURI, marketplaceAddress);
+        emit VialMinted(newItemId, tokenURI);
         return newItemId;
     }
 
