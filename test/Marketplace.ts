@@ -78,4 +78,19 @@ describe("Marketplace contract", function () {
         const vialsForSale = await marketplace.fetchAvailableMarketItems();
         expect(vialsForSale.length).to.equal(10);
     })
+
+    it("Should create NFTs and return their URIs", async function () {
+        const { nft } = await deployMarketplaceFixture();
+        // Create NFTs
+        await nft.mintToken("https://www.mytokenURI.com");
+        await nft.mintToken("https://www.mytokenURI2.com");
+
+        const myTokenIds = await nft.getTokensOwnedByMe();
+
+        const uri_one = await nft.getTokenURI(myTokenIds[0]);
+        const uri_two = await nft.getTokenURI(myTokenIds[1]);
+
+        expect(uri_one).to.equal("https://www.mytokenURI.com");
+        expect(uri_two).to.equal("https://www.mytokenURI2.com");
+    })
 });

@@ -10,6 +10,7 @@ import "hardhat/console.sol";
 contract VialNFT is ERC721URIStorage {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
+    mapping(uint256 => string) public tokenURIs;
 
     address private marketplaceAddress;
 
@@ -30,9 +31,14 @@ contract VialNFT is ERC721URIStorage {
         uint256 newItemId = _tokenIds.current();
         _mint(msg.sender, newItemId);
         _setTokenURI(newItemId, tokenURI);
+        tokenURIs[newItemId] = tokenURI;
 
         emit VialMinted(newItemId, tokenURI);
         return newItemId;
+    }
+
+    function getTokenURI(uint256 tokenId) public view returns (string memory) {
+        return tokenURIs[tokenId];
     }
 
     function burnVial(uint256 tokenId) public {

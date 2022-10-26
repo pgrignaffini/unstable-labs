@@ -15,8 +15,7 @@ import type { Nft } from 'alchemy-sdk'
 import CancelButton from './CancelButton'
 import { parseNftPrice } from '../utils/helpers'
 
-type Props = {}
-function YourNfts({ }: Props) {
+function YourNfts() {
 
     const { alchemySdk } = useAppContext()
     const { address } = useAccount()

@@ -9,14 +9,38 @@ import type { AppRouter } from "../server/router";
 import type { Session } from "next-auth";
 import "../styles/globals.css";
 import dynamic from 'next/dynamic'
-import { WagmiConfig, createClient, configureChains, chain } from 'wagmi'
+import { WagmiConfig, createClient, configureChains, chain, Chain } from 'wagmi'
 import { alchemyProvider } from 'wagmi/providers/alchemy'
+import { infuraProvider } from 'wagmi/providers/infura'
 import { publicProvider } from 'wagmi/providers/public'
 import Footer from "../components/Footer";
 import { Alchemy, Network } from "alchemy-sdk";
 import { AppWrapper } from "../context/AppContext";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from 'react-query/devtools'
+
+const Header = dynamic(
+  () => import('../components/Header'),
+  { ssr: false }
+)
+
+const Aurora: Chain = {
+  id: 1313161555,
+  name: 'Aurora Testnet',
+  network: 'Aurora Testnet',
+  nativeCurrency: {
+    decimals: 18,
+    name: 'Aurora ETH',
+    symbol: 'ETH',
+  },
+  rpcUrls: {
+    default: 'https://testnet.aurora.dev/',
+  },
+  blockExplorers: {
+    default: { name: 'AuroraScan', url: 'https://testnet.aurorascan.dev/' },
+  },
+  testnet: true,
+}
 
 const config = {
   apiKey: process.env.ALCHEMY_API_KEY,
@@ -25,8 +49,8 @@ const config = {
 
 const alchemy = new Alchemy(config);
 
-const { provider } = configureChains([chain.polygonMumbai], [
-  alchemyProvider({ apiKey: process.env.ALCHEMY_API_KEY }),
+const { provider } = configureChains([Aurora], [
+  infuraProvider({ apiKey: process.env.INFURA_API_KEY }),
   publicProvider(),
 ])
 
@@ -43,10 +67,6 @@ const queryClient = new QueryClient({
   },
 })
 
-const Header = dynamic(
-  () => import('../components/Header'),
-  { ssr: false }
-)
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,

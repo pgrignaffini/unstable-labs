@@ -11,6 +11,10 @@ const config: HardhatUserConfig = {
     mumbai: {
       url: process.env.ALCHEMY_URL,
       accounts: [process.env.PRIVATE_KEY]
+    },
+    aurora: {
+      url: 'https://testnet.aurora.dev',
+      accounts: [`0x${process.env.AURORA_PRIVATE_KEY}`]
     }
   },
   solidity: {

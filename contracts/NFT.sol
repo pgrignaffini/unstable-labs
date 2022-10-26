@@ -12,6 +12,7 @@ contract NFT is ERC721URIStorage {
 
     address private marketplaceAddress;
     mapping(uint256 => address) private _creators;
+    mapping(uint256 => string) public tokenURIs;
 
     event TokenMinted(
         uint256 indexed tokenId,
@@ -31,12 +32,17 @@ contract NFT is ERC721URIStorage {
         _mint(msg.sender, newItemId);
         _creators[newItemId] = msg.sender;
         _setTokenURI(newItemId, tokenURI);
+        tokenURIs[newItemId] = tokenURI;
 
         // Give the marketplace approval to transact NFTs between users
         setApprovalForAll(marketplaceAddress, true);
 
         emit TokenMinted(newItemId, tokenURI, marketplaceAddress);
         return newItemId;
+    }
+
+    function getTokenURI(uint256 tokenId) public view returns (string memory) {
+        return tokenURIs[tokenId];
     }
 
     function getTokensOwnedByMe() public view returns (uint256[] memory) {
