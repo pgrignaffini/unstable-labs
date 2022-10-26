@@ -18,3 +18,9 @@ export type GeneratedImage = {
     description: string;
     image: string;
 }
+
+export type Nft = {
+    name: string;
+    description: string;
+    image: string;
+}

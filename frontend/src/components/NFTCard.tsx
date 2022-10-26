@@ -7,7 +7,11 @@ import { parseNftPrice } from '../utils/helpers';
 import CancelButton from './CancelButton';
 
 type Props = {
-    nft: Nft | Nft & MarketItem
+    nft: {
+        image: string
+        name: string
+        description: string
+    }
     onSale?: boolean
 }
 
@@ -22,10 +26,10 @@ function NFTCard({ nft, onSale }: Props) {
                 </div>
             }
             <div className={`px-4 ${onSale ? "py-2" : "py-5"} `}>
-                <img className='w-64 h-64 object-contain' src={nft?.rawMetadata?.image} alt="image" />
+                <img className='w-64 h-64 object-contain' src={nft?.image} alt="image" />
                 <div className='flex justify-between'>
-                    <p className='font-pixel text-sm'>{nft?.title}</p>
-                    {onSale && <p className='font-pixel text-sm'>{parseNftPrice(nft as Nft & MarketItem)}</p>}
+                    <p className='font-pixel text-sm'>{nft?.name}</p>
+                    {/* {onSale && <p className='font-pixel text-sm'>{parseNftPrice(nft as Nft & MarketItem)}</p>} */}
                 </div>
             </div>
         </div>
