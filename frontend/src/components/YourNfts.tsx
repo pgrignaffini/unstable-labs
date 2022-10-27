@@ -18,11 +18,9 @@ import type { Nft } from "../../typings"
 
 function YourNfts() {
 
-    const { alchemySdk } = useAppContext()
     const { address } = useAccount()
     const [selectedNft, setSelectedNft] = React.useState<Nft | undefined>(undefined)
     const [price, setPrice] = React.useState<string>("0.1")
-    const [ownedTokenURIs, setOwnedTokenURIs] = React.useState<string[]>([])
 
     const { data: ownedTokenIds } = useContractRead({
         addressOrName: nftContractInfo.address,
@@ -34,20 +32,20 @@ function YourNfts() {
         }
     })
 
-    if (ownedTokenIds) {
-        const { data: ownedTokenURIs } = useContractRead({
-            addressOrName: nftContractInfo.address,
-            contractInterface: nftContractInfo.abi,
-            functionName: 'getTokenURIs',
-            args: [ownedTokenIds],
-            onSuccess(data) {
-                setOwnedTokenURIs(ownedTokenURIs as string[])
-                console.log('Token uris: ', data)
-            }
-        })
-    }
+    const { data: ownedTokenURIs } = useContractRead({
+        addressOrName: nftContractInfo.address,
+        contractInterface: nftContractInfo.abi,
+        functionName: 'getTokenURIs',
+        args: [ownedTokenIds],
+        enabled: !!ownedTokenIds,
+        onSuccess(data) {
+            console.log('Token uris: ', data)
+        }
+    })
+
 
     // **** HOW TO USE PROMISE ALL WITH COMPOSED TYPES ****
+    //const ownedNfts = await Promise.all(
     //             ownedTokenIds.map(async (nft: MarketItem) => {
     //                 const ownedNft: Nft = await alchemySdk.nft.getNftMetadata(
     //                     nftContractInfo.address,
@@ -57,20 +55,22 @@ function YourNfts() {
     //             })
     //         )
     //         return ownedNfts
+    //)
 
-    const getOwnedNfts = async () => {
-        if (ownedTokenURIs) {
-            const ownedNfts = await Promise.all(
-                ownedTokenURIs.map(async (tokenURI) => {
-                    const { data: nft } = await axios.get(tokenURI)
-                    return nft as Nft
-                })
-            )
-            return ownedNfts
-        }
+    const getOwnedNfts = async (): Promise<Nft[]> => {
+        const ownedNfts = await Promise.all(
+            (ownedTokenURIs as string[])?.map(async (tokenURI, index): Promise<Nft> => {
+                const { data: nft } = await axios.get(tokenURI)
+                return { ...nft, tokenId: ownedTokenIds?.[index] }
+            })
+        )
+        return ownedNfts
     }
 
-    const { data: nfts, refetch: refetchNfts, isLoading } = useQuery(['your-nfts', address], getOwnedNfts)
+    const { data: nfts, refetch: refetchNfts, isLoading } = useQuery(['your-nfts', address], getOwnedNfts, {
+        enabled: !!ownedTokenURIs,
+        refetchOnWindowFocus: true,
+    })
 
     // const listingModal = (
     //     <>

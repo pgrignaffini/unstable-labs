@@ -66,29 +66,21 @@ contract Marketplace is ReentrancyGuard, Ownable {
         bool canceled
     );
 
+    event Received(address, uint);
+
     constructor() {
         marketplaceOwner = msg.sender;
     }
 
-    function getOwner () public view returns (address) {
+    receive() external payable {
+        emit Received(msg.sender, msg.value);
+    }
+
+    function getOwner() public view returns (address) {
         return marketplaceOwner;
     }
 
-    function createVials(
-        string memory tokenURI,
-        uint256 number,
-        address _vialNFTAddress
-    ) public {
-        require(msg.sender == marketplaceOwner, "Only marketplace owner can mint vials");
-        VialNFT vialNFT = VialNFT(_vialNFTAddress);
-        for (uint256 i = 0; i < number; i++) {
-            uint256 tokenId = vialNFT.mintVial(tokenURI);
-            vialIds.push(tokenId);
-            createMarketItem(_vialNFTAddress, tokenId, 0.01 ether, true);
-        }
-    }
-
-    function getVialIds () public view returns (uint256[] memory) {
+    function getVialIds() public view returns (uint256[] memory) {
         return vialIds;
     }
 
@@ -106,19 +98,14 @@ contract Marketplace is ReentrancyGuard, Ownable {
     function createMarketItem(
         address nftContractAddress,
         uint256 tokenId,
-        uint256 price,
-        bool isVial
+        uint256 price
     ) public payable nonReentrant returns (uint256) {
         require(price > 0, "Price must be at least 1 wei");
         _marketItemIds.increment();
         uint256 marketItemId = _marketItemIds.current();
         address creator;
 
-        if (isVial) {
-            creator = address(this);
-        } else {
-            creator = NFT(nftContractAddress).getTokenCreatorById(tokenId);
-        }
+        creator = NFT(nftContractAddress).getTokenCreatorById(tokenId);
 
         marketItemIdToMarketItem[marketItemId] = MarketItem(
             marketItemId,
@@ -132,14 +119,11 @@ contract Marketplace is ReentrancyGuard, Ownable {
             false
         );
 
-
-        if (!isVial) {
-            IERC721(nftContractAddress).transferFrom(
-                msg.sender,
-                address(this),
-                tokenId
-            );
-        }
+        IERC721(nftContractAddress).transferFrom(
+            msg.sender,
+            address(this),
+            tokenId
+        );
 
         emit MarketItemCreated(
             marketItemId,

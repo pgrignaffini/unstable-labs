@@ -13,8 +13,8 @@ const config: HardhatUserConfig = {
       accounts: [process.env.PRIVATE_KEY]
     },
     aurora: {
-      url: 'https://testnet.aurora.dev',
-      accounts: [`0x${process.env.AURORA_PRIVATE_KEY}`]
+      url: `https://aurora-testnet.infura.io/v3/${process.env.INFURA_API_KEY}`,
+      accounts: [`0x${process.env.AURORA_PRIVATE_KEY}`],
     }
   },
   solidity: {

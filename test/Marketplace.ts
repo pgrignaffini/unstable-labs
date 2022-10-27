@@ -31,15 +31,13 @@ describe("Marketplace contract", function () {
         await marketplace.createMarketItem(
             nft.address,
             1,
-            ethers.utils.parseUnits("1", "ether"),
-            false
+            ethers.utils.parseUnits("1", "ether")
         );
 
         await marketplace.createMarketItem(
             nft.address,
             2,
-            ethers.utils.parseUnits("1", "ether"),
-            false
+            ethers.utils.parseUnits("1", "ether")
         );
 
 
@@ -68,15 +66,15 @@ describe("Marketplace contract", function () {
         expect(items.length).to.equal(0);
     });
 
-    it("Should create vials and put them on sale", async function () {
-        const { marketplace, vialNFT, owner } = await deployMarketplaceFixture();
-        // Create Vials
-        await marketplace.connect(owner)
-            .createVials("https://www.mytokenURI.com", 10, vialNFT.address);
-        const vials = await marketplace.getVialIds();
+    it("Should create vials, transfer them to the payer and send eth to the marketplace", async function () {
+        const { marketplace, vialNFT, addr1 } = await deployMarketplaceFixture();
+
+        const vialPrice = ethers.utils.parseEther("0.001")
+        await vialNFT.connect(addr1).mintVials("https://www.mytokenURI.com", 10, { value: vialPrice });
+        const vials = await vialNFT.connect(addr1).getVialsOwnedByMe();
         expect(vials.length).to.equal(10);
-        const vialsForSale = await marketplace.fetchAvailableMarketItems();
-        expect(vialsForSale.length).to.equal(10);
+        const marketplaceBalance = await ethers.provider.getBalance(marketplace.address);
+        expect(marketplaceBalance).to.equal(vialPrice);
     })
 
     it("Should create NFTs and return their URIs", async function () {

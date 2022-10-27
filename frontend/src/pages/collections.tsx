@@ -7,7 +7,7 @@ import AvailableNftsOnMarket from "../components/AvailableNftsOnMarket";
 
 const Collections: NextPage = () => {
 
-    const [selectedTab, setSelectedTab] = useState('trending')
+    const [selectedTab, setSelectedTab] = useState('your-nfts')
 
     return (
         <div className="grid grid-cols-3 gap-8 p-10 w-4/5 mx-auto min-h-screen">

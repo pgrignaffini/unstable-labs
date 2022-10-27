@@ -11,22 +11,31 @@ contract VialNFT is ERC721URIStorage {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
     mapping(uint256 => string) public tokenURIs;
-
+    uint vialPrice = 0.0001 ether;
     address private marketplaceAddress;
 
-    event VialMinted(
-        uint256 indexed tokenId,
-        string tokenURI
-    );
+    event VialMinted(uint256 indexed tokenId, string tokenURI);
 
     event VialBurned(uint256 indexed tokenId);
 
-    constructor( address _marketplaceAddress) ERC721("UnstableVials", "UVIALS") {
+    constructor(address _marketplaceAddress) ERC721("UnstableVials", "UVIALS") {
         marketplaceAddress = _marketplaceAddress;
     }
 
-    function mintVial(string memory tokenURI) public returns (uint256) {
-        require(msg.sender == marketplaceAddress, "Only marketplace can mint");
+    function getVialPrice() public view returns (uint) {
+        return vialPrice;
+    }
+
+    function mintVials(string memory tokenURI, uint256 number) public payable {
+        require(msg.value >= vialPrice * number, "Not enough ETH");
+        for (uint256 i = 0; i < number; i++) {
+            mintVial(tokenURI);
+        }
+        // transfer ETH to marketplace
+        payable(marketplaceAddress).transfer(msg.value);
+    }
+
+    function mintVial(string memory tokenURI) internal returns (uint256) {
         _tokenIds.increment();
         uint256 newItemId = _tokenIds.current();
         _mint(msg.sender, newItemId);
@@ -41,8 +50,19 @@ contract VialNFT is ERC721URIStorage {
         return tokenURIs[tokenId];
     }
 
+    function getTokenURIs(uint256[] memory tokenIds)
+        public
+        view
+        returns (string[] memory)
+    {
+        string[] memory uris = new string[](tokenIds.length);
+        for (uint256 i = 0; i < tokenIds.length; i++) {
+            uris[i] = tokenURIs[tokenIds[i]];
+        }
+        return uris;
+    }
+
     function burnVial(uint256 tokenId) public {
-        require(msg.sender == marketplaceAddress, "Only marketplace can burn");
         _burn(tokenId);
         emit VialBurned(tokenId);
     }

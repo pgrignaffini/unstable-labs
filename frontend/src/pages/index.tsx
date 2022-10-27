@@ -5,12 +5,9 @@ import { useQuery } from "react-query";
 import SolidButton from "../components/SolidButton";
 import axios from "axios";
 import { useNetwork, useSwitchNetwork } from 'wagmi'
+import MintButton from "../components/MintButton";
 
 const Home: NextPage = () => {
-
-  const network = useSwitchNetwork({
-    chainId: 80001,
-  })
 
   const fetchImages = async () => {
     const res = await axios.get('http://localhost:3001/diffemon');
@@ -53,11 +50,13 @@ const Home: NextPage = () => {
         {images && <div className="w-full mt-24">
           <ResultCarousel images={images} />
         </div>}
+        <div>
+          <MintButton image="/flask.png" name="vial" description="vial" isVial={true} numVials={2} />
+        </div>
         <div className="mt-24 flex space-x-4">
           <img src="/barrel-toxic.gif" alt="barrel" className="w-24" />
           <img src="/barrels.png" alt="barrels" className="w-56" />
           <img src="/pc-animated.gif" alt="barrels" className="w-48" />
-
         </div>
       </main>
     </>

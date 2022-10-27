@@ -20,6 +20,7 @@ export type GeneratedImage = {
 }
 
 export type Nft = {
+    id: number;
     name: string;
     description: string;
     image: string;
