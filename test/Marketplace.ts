@@ -79,20 +79,34 @@ describe("Marketplace contract", function () {
 
     it("Should create NFTs and return their URIs", async function () {
         const { nft } = await deployMarketplaceFixture();
-        // Create NFTs
+
         await nft.mintToken("https://www.mytokenURI.com");
         await nft.mintToken("https://www.mytokenURI2.com");
-
         const myTokenIds = await nft.getTokensOwnedByMe();
 
         const uri_one = await nft.getTokenURI(myTokenIds[0]);
         const uri_two = await nft.getTokenURI(myTokenIds[1]);
-
-        expect(uri_one).to.equal("https://www.mytokenURI.com");
-        expect(uri_two).to.equal("https://www.mytokenURI2.com");
+        expect(uri_one.tokenId).to.equal(ethers.BigNumber.from(1));
+        expect(uri_two.tokenId).to.equal(ethers.BigNumber.from(2));
+        expect(uri_one.tokenURI).to.equal("https://www.mytokenURI.com");
+        expect(uri_two.tokenURI).to.equal("https://www.mytokenURI2.com");
 
         const uris = await nft.getTokenURIs(myTokenIds);
-        expect(uris[0]).to.equal("https://www.mytokenURI.com");
-        expect(uris[1]).to.equal("https://www.mytokenURI2.com");
+        expect(uris[0].tokenId).to.equal(ethers.BigNumber.from(1));
+        expect(uris[1].tokenId).to.equal(ethers.BigNumber.from(2));
+        expect(uris[0].tokenURI).to.equal("https://www.mytokenURI.com");
+        expect(uris[1].tokenURI).to.equal("https://www.mytokenURI2.com");
+    })
+    it("Should create vials and burn them", async function () {
+        const { vialNFT, addr1 } = await deployMarketplaceFixture();
+        const vialPrice = ethers.utils.parseEther("0.001")
+        await vialNFT.connect(addr1).mintVials("https://www.mytokenURI.com", 10, { value: vialPrice });
+        let vials = await vialNFT.connect(addr1).getVialsOwnedByMe();
+        expect(vials.length).to.equal(10);
+        await vialNFT.connect(addr1).burnVial(vials[0]);
+        await vialNFT.connect(addr1).burnVial(vials[1]);
+        await vialNFT.connect(addr1).burnVial(vials[2]);
+        vials = await vialNFT.connect(addr1).getVialsOwnedByMe();
+        expect(vials.length).to.equal(7);
     })
 });

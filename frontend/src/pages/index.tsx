@@ -50,9 +50,6 @@ const Home: NextPage = () => {
         {images && <div className="w-full mt-24">
           <ResultCarousel images={images} />
         </div>}
-        <div>
-          <MintButton image="/flask.png" name="vial" description="vial" isVial={true} numVials={2} />
-        </div>
         <div className="mt-24 flex space-x-4">
           <img src="/barrel-toxic.gif" alt="barrel" className="w-24" />
           <img src="/barrels.png" alt="barrels" className="w-56" />

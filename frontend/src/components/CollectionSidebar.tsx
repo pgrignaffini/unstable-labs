@@ -21,8 +21,12 @@ function CollectionSidebar({ setSelectedTab }: Props) {
             {/* <CollectionSideBarRow title="Trending" type='rocket' onClick={() => setSelectedTab('trending')} />
             <CollectionSideBarRow title="Favorites" type='star' onClick={() => setSelectedTab('favorites')} /> */}
             {isConnected && (
-                <CollectionSideBarRow title="Your NFTs" type='nfts' onClick={() => setSelectedTab('your-nfts')} />
+                <>
+                    <CollectionSideBarRow title="Experiments" type='nfts' onClick={() => setSelectedTab('your-nfts')} />
+                    <CollectionSideBarRow title="Vials" type='rocket' onClick={() => setSelectedTab('vials')} />
+                </>
             )}
+            <CollectionSideBarRow title="Vial Brewery" type='star' onClick={() => setSelectedTab('buy-vials')} />
             <CollectionSideBarRow title="Marketplace" type='star' onClick={() => setSelectedTab('marketplace')} />
         </div>
     )

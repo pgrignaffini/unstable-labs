@@ -18,8 +18,6 @@ contract Marketplace is ReentrancyGuard, Ownable {
 
     address private marketplaceOwner;
 
-    uint256[] public vialIds;
-
     mapping(uint256 => MarketItem) private marketItemIdToMarketItem;
 
     struct MarketItem {
@@ -78,17 +76,6 @@ contract Marketplace is ReentrancyGuard, Ownable {
 
     function getOwner() public view returns (address) {
         return marketplaceOwner;
-    }
-
-    function getVialIds() public view returns (uint256[] memory) {
-        return vialIds;
-    }
-
-    function burnVial(address vialContractAddress, uint256 tokenId)
-        public
-        onlyOwner
-    {
-        VialNFT(vialContractAddress).burnVial(tokenId);
     }
 
     /**

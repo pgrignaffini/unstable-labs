@@ -14,6 +14,11 @@ contract NFT is ERC721URIStorage {
     mapping(uint256 => address) private _creators;
     mapping(uint256 => string) public tokenURIs;
 
+    struct NFTData {
+        uint256 tokenId;
+        string tokenURI;
+    }
+
     event TokenMinted(
         uint256 indexed tokenId,
         string tokenURI,
@@ -29,7 +34,7 @@ contract NFT is ERC721URIStorage {
     function mintToken(string memory tokenURI) public returns (uint256) {
         _tokenIds.increment();
         uint256 newItemId = _tokenIds.current();
-        _mint(msg.sender, newItemId);
+        _safeMint(msg.sender, newItemId);
         _creators[newItemId] = msg.sender;
         _setTokenURI(newItemId, tokenURI);
         tokenURIs[newItemId] = tokenURI;
@@ -41,18 +46,18 @@ contract NFT is ERC721URIStorage {
         return newItemId;
     }
 
-    function getTokenURI(uint256 tokenId) public view returns (string memory) {
-        return tokenURIs[tokenId];
+    function getTokenURI(uint256 tokenId) public view returns (NFTData memory) {
+        return NFTData(tokenId, tokenURIs[tokenId]);
     }
 
     function getTokenURIs(uint256[] memory tokenIds)
         public
         view
-        returns (string[] memory)
+        returns (NFTData[] memory)
     {
-        string[] memory uris = new string[](tokenIds.length);
+        NFTData[] memory uris = new NFTData[](tokenIds.length);
         for (uint256 i = 0; i < tokenIds.length; i++) {
-            uris[i] = tokenURIs[tokenIds[i]];
+            uris[i] = NFTData(tokenIds[i], tokenURIs[tokenIds[i]]);
         }
         return uris;
     }

@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import MintButton from "./MintButton"
 import type { GeneratedImage } from "../../typings"
+import { ipfsGateway } from "../utils/constants"
+import { Type } from "../utils/constants"
 
 type Props = {
     images: GeneratedImage[]
@@ -46,7 +48,7 @@ function ResultCarousel({ images }: Props) {
                                   outline-none text-black font-pixel placeholder:font-pixel text-sm placeholder:text-sm"
                                     placeholder="Enter description..." onChange={(e) => setDescription(e.target.value)} />
                                 <div className="mx-auto">
-                                    <MintButton image={imageToShow} name={name} description={description} />
+                                    <MintButton image={imageToShow} name={name} description={description} type={Type.Experiment} />
                                 </div>
                             </form>
                         </div>
@@ -56,16 +58,16 @@ function ResultCarousel({ images }: Props) {
             <div className='bg-gray-400 p-4 overflow-x-auto flex space-x-4'>
                 {images?.map((image: GeneratedImage, index: number) => (
                     <div className="flex flex-col space-y-4 items-center " key={index}>
-                        <div onClick={() => setImageToShow(`https://gateway.ipfs.io/ipfs/${image.image}`)}>
+                        <div onClick={() => setImageToShow(`${ipfsGateway}/${image.image}`)}>
                             <div className='bg-gray-200 p-4 w-60 h-124 flex-none shadow-xl'>
                                 <label htmlFor="zoom-modal" className='cursor-pointer'>
-                                    <img src={`https://gateway.ipfs.io/ipfs/${image.image}`} />
+                                    <img src={`${ipfsGateway}/${image.image}`} />
                                 </label>
                             </div>
                         </div>
                         <label htmlFor="result-modal" className='cursor-pointer mt-4'>
                             <div className="group flex space-x-2 items-end  w-fit bg-acid py-4 px-10"
-                                onClick={() => setImageToShow(`https://gateway.ipfs.io/ipfs/${image.image}`)}>
+                                onClick={() => setImageToShow(`${ipfsGateway}/${image.image}`)}>
                                 <p className="font-pixel text-md text-white">Brew</p>
                                 <div className="group-hover:animate-tremble">
                                     <img src="/flask.png" alt="flask" className="w-6" />

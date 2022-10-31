@@ -1,3 +1,5 @@
+import { BigNumber } from "ethers";
+
 export type MarketItem = {
     marketItemId: string;
     nftContractAddress: string;
@@ -19,9 +21,22 @@ export type GeneratedImage = {
     image: string;
 }
 
+export type NftURI = {
+    tokenId: BigNumber;
+    tokenURI: string;
+}
+
 export type Nft = {
-    id: number;
+    tokenId: BigNumber;
     name: string;
     description: string;
     image: string;
+    type: number;
+}
+
+export type Vial = {
+    name: string;
+    image: string;
+    description: string;
+    type: number;
 }

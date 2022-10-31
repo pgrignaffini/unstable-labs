@@ -1,9 +1,16 @@
 import type { NextPage } from "next";
-import CollectionSidebar from "../components/CollectionSidebar";
 import { useState } from "react";
 import Trending from "../components/Trending";
 import YourNfts from "../components/YourNfts";
 import AvailableNftsOnMarket from "../components/AvailableNftsOnMarket";
+import BuyVials from "../components/BuyVials";
+import Vials from "../components/Vials";
+import dynamic from "next/dynamic";
+
+const CollectionSidebar = dynamic(
+    () => import('../components/CollectionSidebar'),
+    { ssr: false }
+)
 
 const Collections: NextPage = () => {
 
@@ -16,6 +23,8 @@ const Collections: NextPage = () => {
             </div>
             {selectedTab === 'trending' && <Trending />}
             {selectedTab === 'your-nfts' && <YourNfts />}
+            {selectedTab === 'vials' && <Vials />}
+            {selectedTab === 'buy-vials' && <BuyVials />}
             {selectedTab === 'marketplace' && <AvailableNftsOnMarket />}
         </div>
     );

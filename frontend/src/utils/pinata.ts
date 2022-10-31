@@ -6,13 +6,14 @@ const jwt = process.env.NEXT_PUBLIC_PINATA_JWT;
 const axios = require('axios');
 const FormData = require('form-data');
 
-export const uploadJSONToIPFS = async (JSONBody: { name: string; description: string | undefined; image: string; }) => {
+export const uploadJSONToIPFS = async (JSONBody: { name: string; description: string | undefined; image: string; type: number }) => {
 
     const data = JSON.stringify({
         "pinataContent": {
             "name": JSONBody.name,
             "description": JSONBody.description,
-            "image": JSONBody.image
+            "image": JSONBody.image,
+            "type": JSONBody.type
         }
     })
 

@@ -6,16 +6,18 @@ import { useContractWrite, useWaitForTransaction, useContractRead, useFeeData } 
 import { uploadJSONToIPFS } from "../utils/pinata"
 import TxHash from './TxHash';
 import { BigNumber } from 'ethers'
+import { Type } from "../utils/constants"
 
 type Props = {
     image: string;
     name: string;
+    type: Type;
     description?: string;
     isVial?: boolean;
     numVials?: number;
 }
 
-function MintButton({ image, name, description, isVial, numVials }: Props) {
+function MintButton({ image, name, description, isVial, numVials, type }: Props) {
 
     const [minted, setMinted] = React.useState<boolean>(false)
     const [isMinting, setIsMinting] = React.useState<boolean>(false)
@@ -27,7 +29,9 @@ function MintButton({ image, name, description, isVial, numVials }: Props) {
             name,
             description,
             image,
+            type,
         }
+        console.log(nftJSON)
         try {
             const response = await uploadJSONToIPFS(nftJSON);
             if (response.status === 200) {
@@ -46,14 +50,14 @@ function MintButton({ image, name, description, isVial, numVials }: Props) {
             contractInterface: JSON.stringify(vialContractInfo.abi),
             functionName: "getVialPrice",
             onSuccess: (data) => {
-                const vialPrice = (BigNumber.from(data).mul(BigNumber.from(numVials)))
+                const vialPrice = BigNumber.from(data)
                 setVialPrice(vialPrice)
             }
         })
     }
 
 
-    const { write: createToken, data: tokenData } = useContractWrite({
+    const { write: createToken, data: tokenData, error: errorMintToken } = useContractWrite({
         mode: 'recklesslyUnprepared',
         addressOrName: nftContractInfo.address,
         contractInterface: JSON.stringify(nftContractInfo.abi),
@@ -63,7 +67,7 @@ function MintButton({ image, name, description, isVial, numVials }: Props) {
         }
     })
 
-    const { write: createVials, data: vialData } = useContractWrite({
+    const { write: createVials, data: vialData, error: errorMintVials } = useContractWrite({
         mode: 'recklesslyUnprepared',
         addressOrName: vialContractInfo.address,
         contractInterface: JSON.stringify(vialContractInfo.abi),
@@ -77,6 +81,7 @@ function MintButton({ image, name, description, isVial, numVials }: Props) {
     })
 
     const data = isVial ? vialData : tokenData
+    const error = isVial ? errorMintVials : errorMintToken
 
     useWaitForTransaction({
         hash: data?.hash,
@@ -94,14 +99,13 @@ function MintButton({ image, name, description, isVial, numVials }: Props) {
             {data &&
                 <TxHash hash={data?.hash} />
             }
-            <SolidButton loading={isMinting} isFinished={minted} text="Mint" onClick={async () => {
-                // const tokenUri = await uploadMetadataToIPFS()
-                const tokenUri = "uri"
+            <SolidButton loading={isMinting} isFinished={minted} isError={!!error} text="Mint" onClick={async () => {
+                const tokenUri = await uploadMetadataToIPFS()
                 isVial && numVials && vialPrice ? createVials?.({
-                    recklesslySetUnpreparedArgs: [tokenUri, numVials, { value: vialPrice, gasPrice: feeData?.gasPrice }]
+                    recklesslySetUnpreparedArgs: [tokenUri, numVials, { value: (vialPrice.mul(BigNumber.from(numVials))), gasPrice: feeData?.gasPrice }]
                 }) :
                     createToken?.({
-                        recklesslySetUnpreparedArgs: [tokenUri]
+                        recklesslySetUnpreparedArgs: [tokenUri, { gasPrice: feeData?.gasPrice }]
                     })
             }} />
         </div>

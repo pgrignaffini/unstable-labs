@@ -5,7 +5,9 @@ const fs = require("fs");
 async function main() {
 
   const Marketplace = await hre.ethers.getContractFactory("Marketplace");
+  console.log("Deploying Marketplace...");
   const marketplace = await Marketplace.deploy();
+  console.log("Marketplace deployed to:", `https://testnet.aurorascan.dev/address/${marketplace.address}`);
 
   await marketplace.deployed();
 
@@ -18,9 +20,13 @@ async function main() {
   fs.writeFileSync('./contracts/abi/marketplace.json', JSON.stringify(marketplaceData))
 
   const NFT = await hre.ethers.getContractFactory("NFT");
+  console.log("Deploying NFT...");
   const nft = await NFT.deploy(marketplace.address);
+  console.log("NFT deployed to:", `https://testnet.aurorascan.dev/address/${nft.address}`);
   const VialNFT = await hre.ethers.getContractFactory("VialNFT");
+  console.log("Deploying VialNFT...");
   const vialNFT = await VialNFT.deploy(marketplace.address);
+  console.log("VialNFT deployed to:", `https://testnet.aurorascan.dev/address/${vialNFT.address}`);
 
   await nft.deployed();
   await vialNFT.deployed();

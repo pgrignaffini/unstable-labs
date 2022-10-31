@@ -6,7 +6,6 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "hardhat/console.sol";
 
-// TO DO: Explain the reason/advantadge to use ERC721URIStorage instead of ERC721 itself
 contract VialNFT is ERC721URIStorage {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
@@ -14,8 +13,12 @@ contract VialNFT is ERC721URIStorage {
     uint vialPrice = 0.0001 ether;
     address private marketplaceAddress;
 
-    event VialMinted(uint256 indexed tokenId, string tokenURI);
+    struct NFTData {
+        uint256 tokenId;
+        string tokenURI;
+    }
 
+    event VialMinted(uint256 indexed tokenId, string tokenURI);
     event VialBurned(uint256 indexed tokenId);
 
     constructor(address _marketplaceAddress) ERC721("UnstableVials", "UVIALS") {
@@ -38,7 +41,7 @@ contract VialNFT is ERC721URIStorage {
     function mintVial(string memory tokenURI) internal returns (uint256) {
         _tokenIds.increment();
         uint256 newItemId = _tokenIds.current();
-        _mint(msg.sender, newItemId);
+        _safeMint(msg.sender, newItemId);
         _setTokenURI(newItemId, tokenURI);
         tokenURIs[newItemId] = tokenURI;
 
@@ -53,17 +56,17 @@ contract VialNFT is ERC721URIStorage {
     function getTokenURIs(uint256[] memory tokenIds)
         public
         view
-        returns (string[] memory)
+        returns (NFTData[] memory)
     {
-        string[] memory uris = new string[](tokenIds.length);
+        NFTData[] memory uris = new NFTData[](tokenIds.length);
         for (uint256 i = 0; i < tokenIds.length; i++) {
-            uris[i] = tokenURIs[tokenIds[i]];
+            uris[i] = NFTData(tokenIds[i], tokenURIs[tokenIds[i]]);
         }
         return uris;
     }
 
     function burnVial(uint256 tokenId) public {
-        _burn(tokenId);
+        transferFrom(msg.sender, address(0x0000dead), tokenId);
         emit VialBurned(tokenId);
     }
 
