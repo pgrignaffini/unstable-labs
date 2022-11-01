@@ -5,11 +5,11 @@ import ResultCarousel from "../components/ResultCarousel";
 import { useQuery } from "react-query";
 import SolidButton from "../components/SolidButton";
 import axios from "axios";
-import { useNetwork, useSwitchNetwork } from 'wagmi'
-import MintButton from "../components/MintButton";
-import { BigNumber } from "ethers";
+import type { FormEvent } from "react"
 import Vials from "../components/Vials";
 import type { Vial } from "../../typings";
+import { usePrepareContractWrite, useContractWrite, useWaitForTransaction } from "wagmi";
+import vialContractInfo from "../../../contracts/abi/vialNFT.json";
 
 const Home: NextPage = () => {
 
@@ -17,13 +17,49 @@ const Home: NextPage = () => {
 
   const fetchImages = async () => {
     const res = await axios.get('http://localhost:3001/diffemon');
-    console.log(res)
     return res.data;
   }
 
-  const { data: images, isLoading, refetch } = useQuery(['images'], fetchImages, {
+  const { data: images, refetch } = useQuery(['images'], fetchImages, {
     enabled: false
   });
+
+  const { config } = usePrepareContractWrite({
+    addressOrName: vialContractInfo.address,
+    contractInterface: vialContractInfo.abi,
+    functionName: 'burnVial',
+    args: [vialToBurn?.tokenId],
+    onSuccess(data) {
+      console.log('Success', data)
+    },
+    onError(error) {
+      console.log('Error', error)
+    }
+  })
+
+  const { data, writeAsync: burnVial, isLoading: isBrewing } = useContractWrite({
+    ...config,
+    enabled: !!vialToBurn,
+    onSuccess(data) {
+      refetch()
+      console.log('Success', data)
+    },
+    onError(error) {
+      console.log('Error', error)
+    }
+  })
+
+  const { isSuccess, isLoading } = useWaitForTransaction({
+    hash: data?.hash,
+  })
+
+  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    if (e.currentTarget.prompt.value && vialToBurn) {
+      await burnVial?.()
+      setVialToBurn(undefined)
+    }
+  }
 
   const selectVialModal = (
     <>
@@ -67,15 +103,16 @@ const Home: NextPage = () => {
         </div>
         <img src="/brewery-animated.gif" className="w-72 mx-auto mt-16" />
         <div className="bg-gray-400 p-6 w-2/3 mx-auto mt-16 row-start-3 col-start-3">
-          <div className="flex space-x-5 items-center">
+          <form className="flex space-x-5 items-center" onSubmit={(e) => onSubmit(e)}>
             <label htmlFor="select-vial-modal" className="cursor-pointer" >
               <div className="h-12 w-12 border-2 border-acid bg-white">
                 {vialToBurn && <img src={vialToBurn.image} alt="vial" className="p-1 h-12 w-12 object-contain" />}
               </div>
             </label>
-            <input type="text" className="w-full p-4 placeholder:font-pixel text-black outline-none font-pixel" placeholder="Enter your description" />
-            <SolidButton text="Brew" onClick={() => refetch()} />
-          </div>
+            <input type="text" id="prompt" className="w-full p-4 placeholder:font-pixel text-black outline-none font-pixel" required placeholder="Enter your description" />
+            <SolidButton text="Brew" loading={isBrewing} isFinished={isSuccess} />
+          </form>
+          {!vialToBurn && <p className="pt-2 font-pixel text-[0.6rem] text-red-500">Please select a vial to start</p>}
         </div>
         {isLoading && <div className="flex justify-center mt-8">
           <img src="/flask-combining.gif" alt="loading" className="w-64" />

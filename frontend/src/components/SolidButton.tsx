@@ -25,7 +25,7 @@ function SolidButton({ text, onClick, width, loading, isFinished, isError }: Pro
               `${text}ed`
           }</p>
         </div>
-        : <button type="button" className={`relative font-pixel text-md text-white ${width}`} onPointerOver={() => setClicked(false)} onClick={() => {
+        : <button type="submit" className={`relative font-pixel text-md text-white ${width}`} onPointerOver={() => setClicked(false)} onClick={() => {
           setClicked(true)
           onClick?.()
         }}>
