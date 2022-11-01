@@ -7,14 +7,17 @@ import axios from 'axios'
 import NFTCard from './NFTCard';
 import { groupBy } from '../utils/helpers'
 import { Type } from '../utils/constants';
+import VialSelectionContainer from './VialSelectionContainer';
+import { BigNumber } from 'ethers';
 
-type Props = {}
+type Props = {
+    vialToBurn?: Vial | undefined
+    setVialToBurn?: React.Dispatch<React.SetStateAction<Vial | undefined>>
+}
 
-function Vials({ }: Props) {
+function Vials({ setVialToBurn, vialToBurn }: Props) {
 
     const { address } = useAccount()
-    const [selectedNft, setSelectedNft] = React.useState<Nft>()
-    const [price, setPrice] = React.useState<string>("0.1")
 
     const { data: ownedTokenIds } = useContractRead({
         addressOrName: vialContractInfo.address,
@@ -58,15 +61,38 @@ function Vials({ }: Props) {
     const yellowVials: Vial[] = groupedVials[Type.YellowVial] || []
     const greenVials: Vial[] = groupedVials[Type.GreenVial] || []
 
-    return (
-        <div className="col-span-2 grid grid-rows-4 gap-8 grid-cols-4">
+    const displayVialCards = (
+        <>
             {purpleVials.length > 0 &&
                 <NFTCard nft={purpleVials[0] as Vial} multiple={purpleVials.length} />}
             {yellowVials.length > 0 &&
                 <NFTCard nft={yellowVials[0] as Vial} multiple={yellowVials.length} />}
             {greenVials.length > 0 &&
                 <NFTCard nft={greenVials[0] as Vial} multiple={greenVials.length} />}
-        </div>
+        </>
+    )
+
+    const displayVialSelectionGrid = (
+        <>
+            {purpleVials.length > 0 &&
+                <div onClick={() => setVialToBurn?.(purpleVials[0] as Vial)}>
+                    <VialSelectionContainer selected={vialToBurn === (purpleVials[0] as Vial)} vial={purpleVials[0] as Vial} multiple={purpleVials.length} />
+                </div>}
+            {yellowVials.length > 0 &&
+                <div onClick={() => setVialToBurn?.(yellowVials[0] as Vial)}>
+                    <VialSelectionContainer selected={vialToBurn === (yellowVials[0] as Vial)} vial={yellowVials[0] as Vial} multiple={yellowVials.length} />
+                </div>}
+            {greenVials.length > 0 &&
+                <div onClick={() => setVialToBurn?.(greenVials[0] as Vial)}>
+                    <VialSelectionContainer selected={vialToBurn === (yellowVials[0] as Vial)} vial={greenVials[0] as Vial} multiple={greenVials.length} />
+                </div>}
+        </>
+    )
+
+    return (
+        <>
+            {setVialToBurn ? displayVialSelectionGrid : displayVialCards}
+        </>
     )
 }
 

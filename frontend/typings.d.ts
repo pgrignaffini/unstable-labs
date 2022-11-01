@@ -35,6 +35,7 @@ export type Nft = {
 }
 
 export type Vial = {
+    tokenId?: BigNumber;
     name: string;
     image: string;
     description: string;

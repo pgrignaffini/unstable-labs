@@ -1,13 +1,19 @@
 import type { NextPage } from "next";
 import Head from "next/head";
+import React from "react";
 import ResultCarousel from "../components/ResultCarousel";
 import { useQuery } from "react-query";
 import SolidButton from "../components/SolidButton";
 import axios from "axios";
 import { useNetwork, useSwitchNetwork } from 'wagmi'
 import MintButton from "../components/MintButton";
+import { BigNumber } from "ethers";
+import Vials from "../components/Vials";
+import type { Vial } from "../../typings";
 
 const Home: NextPage = () => {
+
+  const [vialToBurn, setVialToBurn] = React.useState<Vial | undefined>(undefined);
 
   const fetchImages = async () => {
     const res = await axios.get('http://localhost:3001/diffemon');
@@ -19,6 +25,27 @@ const Home: NextPage = () => {
     enabled: false
   });
 
+  const selectVialModal = (
+    <>
+      <input type="checkbox" id="select-vial-modal" className="modal-toggle" />
+      <div className="modal">
+        <div className="w-1/3 h-1/3">
+          <label htmlFor="select-vial-modal" className="font-pixel text-2xl text-white cursor-pointer"
+            onClick={() => setVialToBurn(undefined)}>X</label>
+          <div className="bg-white bg-opacity-50 backdrop-blur-xl p-8">
+            <div className="grid grid-cols-4 p-2 gap-4">
+              <Vials setVialToBurn={setVialToBurn} vialToBurn={vialToBurn} />
+            </div>
+            <div className="flex justify-end">
+              <label htmlFor="select-vial-modal"
+                className="p-2 border-acid border-2 w-fit font-pixel text-lg text-white cursor-pointer">Select</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  )
+
   return (
     <>
       <Head>
@@ -27,6 +54,7 @@ const Home: NextPage = () => {
         <link rel="icon" href="/flask.png" />
       </Head>
       <main className="container mx-auto w-4/5 p-10">
+        {selectVialModal}
         <div className="mt-4 relative ">
           <img src="/lab-top.png" alt="lab-top" className="w-full" />
           <div className="w-full absolute bg-black bottom-1/2 ">
@@ -39,7 +67,12 @@ const Home: NextPage = () => {
         </div>
         <img src="/brewery-animated.gif" className="w-72 mx-auto mt-16" />
         <div className="bg-gray-400 p-6 w-2/3 mx-auto mt-16 row-start-3 col-start-3">
-          <div className="flex space-x-5">
+          <div className="flex space-x-5 items-center">
+            <label htmlFor="select-vial-modal" className="cursor-pointer" >
+              <div className="h-12 w-12 border-2 border-acid bg-white">
+                {vialToBurn && <img src={vialToBurn.image} alt="vial" className="p-1 h-12 w-12 object-contain" />}
+              </div>
+            </label>
             <input type="text" className="w-full p-4 placeholder:font-pixel text-black outline-none font-pixel" placeholder="Enter your description" />
             <SolidButton text="Brew" onClick={() => refetch()} />
           </div>

@@ -23,7 +23,11 @@ const Collections: NextPage = () => {
             </div>
             {selectedTab === 'trending' && <Trending />}
             {selectedTab === 'your-nfts' && <YourNfts />}
-            {selectedTab === 'vials' && <Vials />}
+            {selectedTab === 'vials' &&
+                <div className="col-span-2 grid grid-rows-4 gap-8 grid-cols-4">
+                    <Vials />
+                </div>
+            }
             {selectedTab === 'buy-vials' && <BuyVials />}
             {selectedTab === 'marketplace' && <AvailableNftsOnMarket />}
         </div>
