@@ -6,7 +6,7 @@ type Props = {
         name: string
         description: string
     }
-    multiple?: number
+    multiple: number
     selected?: boolean
 }
 

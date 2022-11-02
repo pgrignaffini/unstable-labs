@@ -1,17 +1,10 @@
 import React from 'react'
-import { useAppContext } from '../context/AppContext'
 import { useQuery } from 'react-query'
 import Loader from '../components/Loader'
 import NFTCard from '../components/NFTCard'
 import { useAccount } from "wagmi"
 import nftContractInfo from "../../../contracts/abi/nft.json"
-import marketplaceContractInfo from "../../../contracts/abi/marketplace.json"
-import vialNftContractInfo from "../../../contracts/abi/vialNFT.json"
 import { useContractRead } from 'wagmi'
-import ListButton from './ListButton'
-import type { MarketItem } from '../../typings'
-import CancelButton from './CancelButton'
-import { parseNftPrice } from '../utils/helpers'
 import axios from 'axios'
 import type { Nft, NftURI } from "../../typings"
 
