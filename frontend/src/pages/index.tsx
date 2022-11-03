@@ -170,6 +170,7 @@ const Home: NextPage = () => {
         </div>
         <img src="/brewery-animated.gif" className="w-72 mx-auto mt-16" />
         <div className="bg-gray-400 p-6 w-2/3 mx-auto mt-16 row-start-3 col-start-3">
+          {selected && <p className="font-pixel text-[0.5rem] text-black">{selected.label}</p>}
           <div className="flex items-center space-x-3 justify-between">
             <label htmlFor="select-vial-modal" className="cursor-pointer" >
               <div className="h-12 w-12 border-2 border-acid bg-white">
