@@ -51,37 +51,37 @@ function BuyVials({ }: Props) {
             {buyVialModal}
             <label htmlFor="buy-vial-modal" className='cursor-pointer mt-4'>
                 <div onClick={() => setVial(PurpleVial)}>
-                    <NFTCard nft={PurpleVial} />
+                    <NFTCard nft={PurpleVial} isVial />
                 </div>
             </label>
             <label htmlFor="buy-vial-modal" className='cursor-pointer mt-4'>
                 <div onClick={() => setVial(YellowVial)}>
-                    <NFTCard nft={YellowVial} />
+                    <NFTCard nft={YellowVial} isVial />
                 </div>
             </label>
             <label htmlFor="buy-vial-modal" className='cursor-pointer mt-4'>
                 <div onClick={() => setVial(GreenVial)}>
-                    <NFTCard nft={GreenVial} />
+                    <NFTCard nft={GreenVial} isVial />
                 </div>
             </label>
             <label htmlFor="buy-vial-modal" className='cursor-pointer mt-4'>
                 <div onClick={() => setVial(BlueVial)}>
-                    <NFTCard nft={BlueVial} />
+                    <NFTCard nft={BlueVial} isVial />
                 </div>
             </label>
             <label htmlFor="buy-vial-modal" className='cursor-pointer mt-4'>
                 <div onClick={() => setVial(BrownVial)}>
-                    <NFTCard nft={BrownVial} />
+                    <NFTCard nft={BrownVial} isVial />
                 </div>
             </label>
             <label htmlFor="buy-vial-modal" className='cursor-pointer mt-4'>
                 <div onClick={() => setVial(OrangeVial)}>
-                    <NFTCard nft={OrangeVial} />
+                    <NFTCard nft={OrangeVial} isVial={true} />
                 </div>
             </label>
             <label htmlFor="buy-vial-modal" className='cursor-pointer mt-4'>
                 <div onClick={() => setVial(RedVial)}>
-                    <NFTCard nft={RedVial} />
+                    <NFTCard nft={RedVial} isVial={true} />
                 </div>
             </label>
         </div>
