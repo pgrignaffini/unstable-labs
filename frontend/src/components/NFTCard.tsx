@@ -27,7 +27,7 @@ function NFTCard({ nft, onSale, multiple }: Props) {
                 </div>
             }
             <div className={`px-4 ${onSale ? "py-2" : "py-5"}`}>
-                <img className='w-64 h-64 object-contain' src={nft?.image} alt="image" />
+                <img className='w-64 h-64 object-contain' src={"data:image/.webp;base64," + nft?.image} alt="image" />
                 <div className='flex justify-between'>
                     <p className='font-pixel text-sm'>{nft?.name}</p>
                     {multiple && <p className='font-pixel text-sm'>{multiple}x</p>}

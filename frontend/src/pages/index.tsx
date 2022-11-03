@@ -10,19 +10,79 @@ import Vials from "../components/Vials";
 import type { Vial } from "../../typings";
 import { usePrepareContractWrite, useContractWrite, useWaitForTransaction } from "wagmi";
 import vialContractInfo from "../../../contracts/abi/vialNFT.json";
+import type { Generation, Status, Option } from "../../typings"
+import { options } from "../utils/options"
 
 const Home: NextPage = () => {
 
   const [vialToBurn, setVialToBurn] = React.useState<Vial | undefined>(undefined);
+  const [selected, setSelected] = React.useState<Option | undefined>(undefined)
+  const [prompt, setPrompt] = React.useState<string>("")
+  const [requestID, setRequestID] = React.useState<string | null>(null)
+  const [generatedImages, setGeneratedImages] = React.useState<Generation[] | undefined>(undefined)
+  const [status, setStatus] = React.useState<Status | null>(null)
 
-  const fetchImages = async () => {
-    const res = await axios.get('http://localhost:3001/diffemon');
-    return res.data;
+  // set selected option based on vialToBurn type
+  React.useEffect(() => {
+    if (vialToBurn) {
+      const option = options.find(option => option.type === vialToBurn.type)
+      setSelected(option)
+      console.log("Selected option: ", option?.label)
+    }
+  }, [vialToBurn])
+
+  const generate = async (prompt: string) => {
+    setGeneratedImages([])
+    setRequestID(null)
+    setStatus(null)
+    console.log("Generating image with prompt: ", prompt)
+    axios.post('https://stablehorde.net/api/v2/generate/async', {
+      prompt: prompt,
+      params: selected?.params,
+    }, {
+      headers: {
+        'apikey': process.env.NEXT_PUBLIC_STABLE_HORDE_API_KEY
+      }
+    }).then(function (response) {
+      console.log(response);
+      setRequestID(response.data.id)
+    }).catch(function (error) {
+      console.log(error);
+    });
   }
 
-  const { data: images, refetch } = useQuery(['images'], fetchImages, {
-    enabled: false
-  });
+  const checkStatus = async () => {
+    if (requestID) {
+      axios.get(`https://stablehorde.net/api/v2/generate/check/${requestID}`, {
+      }).then(function (response) {
+        console.log(response.data);
+        setStatus(response.data)
+      }).catch(function (error) {
+        console.log(error);
+      });
+    }
+  }
+
+  useQuery('checkStatus', checkStatus, {
+    enabled: requestID !== null,
+    refetchInterval: requestID !== null ? 1000 : false
+  })
+
+  const retrieveImages = async () => {
+    axios.get(`https://stablehorde.net/api/v2/generate/status/${requestID}`, {
+    }).then(function (response) {
+      console.log(response);
+      setGeneratedImages(response.data.generations)
+      setRequestID(null)
+      setStatus(null)
+    }).catch(function (error) {
+      console.log(error);
+    });
+  }
+
+  useQuery('retrieveImages', retrieveImages, {
+    enabled: status?.done,
+  })
 
   const { config } = usePrepareContractWrite({
     addressOrName: vialContractInfo.address,
@@ -37,11 +97,10 @@ const Home: NextPage = () => {
     }
   })
 
-  const { data, writeAsync: burnVial, isLoading: isBrewing } = useContractWrite({
+  const { data, writeAsync: burnVial } = useContractWrite({
     ...config,
     enabled: !!vialToBurn,
     onSuccess(data) {
-      refetch()
       console.log('Success', data)
     },
     onError(error) {
@@ -53,10 +112,18 @@ const Home: NextPage = () => {
     hash: data?.hash,
   })
 
-  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    if (e.currentTarget.prompt.value && vialToBurn) {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    if (vialToBurn) {
+      let newPrompt = selected?.prompt
+      selected?.placeholders.map((_, index) => {
+        const userInput = (document.getElementById(`input-${index}`) as HTMLInputElement).value
+        newPrompt = newPrompt?.replace(`${index}`, userInput)
+      })
+      console.log("New prompt " + newPrompt)
+      setPrompt(newPrompt!)
       await burnVial?.()
+      generate(newPrompt!)
       setVialToBurn(undefined)
     }
   }
@@ -103,24 +170,41 @@ const Home: NextPage = () => {
         </div>
         <img src="/brewery-animated.gif" className="w-72 mx-auto mt-16" />
         <div className="bg-gray-400 p-6 w-2/3 mx-auto mt-16 row-start-3 col-start-3">
-          <form className="flex space-x-5 items-center" onSubmit={(e) => onSubmit(e)}>
+          <div className="flex items-center space-x-3 justify-between">
             <label htmlFor="select-vial-modal" className="cursor-pointer" >
               <div className="h-12 w-12 border-2 border-acid bg-white">
                 {vialToBurn && <img src={vialToBurn.image} alt="vial" className="p-1 h-12 w-12 object-contain" />}
               </div>
             </label>
-            <input type="text" id="prompt" className="w-full p-4 placeholder:font-pixel text-black outline-none font-pixel" required placeholder="Enter your description" />
-            <SolidButton text="Brew" loading={isBrewing} isFinished={isSuccess} />
-          </form>
-          {!vialToBurn && <p className="pt-2 font-pixel text-[0.6rem] text-red-500">Please select a vial to start</p>}
+            {!vialToBurn && <p className="pt-2 font-pixel text-[0.6rem] text-red-500">Please select a vial to start</p>}
+            {selected &&
+              <form className='flex space-x-5 items-center' onSubmit={handleSubmit}>
+                {selected?.placeholders?.map((key, index) => (
+                  <input key={key} id={`input-${index}`} className='w-full p-4 placeholder:font-pixel text-black outline-none font-pixel' required placeholder={key} />
+                ))}
+                <SolidButton text="Brew" type="submit" loading={status?.done === false} isFinished={status?.done} />
+              </form>
+            }
+          </div>
         </div>
-        {isLoading && <div className="flex justify-center mt-8">
-          <img src="/flask-combining.gif" alt="loading" className="w-64" />
-        </div>}
-        {images && <div className="w-full mt-24">
-          <ResultCarousel images={images} />
-        </div>}
-        <div className="mt-24 flex space-x-4">
+        {status &&
+          <>
+            <div className='flex space-x-4 justify-center mt-10'>
+              <p className="font-pixel text-sm">Wait time: {status.wait_time}</p>
+              <p className="font-pixel text-sm">{`${status && status.processing <= 0 ? "Queuing the request" : "Queued"}`}</p>
+              {status && status.processing > 0 && <p className="font-pixel text-sm">{`Processing: ${status.processing} images`}</p>}
+              {status && status.finished > 0 && <p className="font-pixel text-sm">{`Finished rendering: ${status.finished} images`}</p>}
+            </div>
+            {!status.done && <div className="flex justify-center mt-8">
+              <img src="/flask-combining.gif" alt="loading" className="w-64" />
+            </div>}
+          </>
+        }
+        {generatedImages &&
+          <div className="w-full mt-24">
+            <ResultCarousel images={generatedImages} />
+          </div>}
+        <div className="mt-24 flex justify-evenly">
           <img src="/barrel-toxic.gif" alt="barrel" className="w-24" />
           <img src="/barrels.png" alt="barrels" className="w-56" />
           <img src="/pc-animated.gif" alt="barrels" className="w-48" />

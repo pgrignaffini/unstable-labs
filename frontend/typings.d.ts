@@ -73,4 +73,5 @@ export type Option = {
     prompt: string | undefined,
     params: Params,
     placeholders: Array<string>,
+    type: number,
 }

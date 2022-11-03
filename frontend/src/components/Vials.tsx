@@ -84,7 +84,7 @@ function Vials({ setVialToBurn, vialToBurn }: Props) {
                 </div>}
             {greenVials.length > 0 &&
                 <div onClick={() => setVialToBurn?.(greenVials[0] as Vial)}>
-                    <VialSelectionContainer selected={vialToBurn === (yellowVials[0] as Vial)} vial={greenVials[0] as Vial} multiple={greenVials.length} />
+                    <VialSelectionContainer selected={vialToBurn === (greenVials[0] as Vial)} vial={greenVials[0] as Vial} multiple={greenVials.length} />
                 </div>}
         </>
     )

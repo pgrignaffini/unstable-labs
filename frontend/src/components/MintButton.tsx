@@ -80,7 +80,7 @@ function MintButton({ image, name, description, isVial, numVials, type }: Props)
         }
     })
 
-    const data = isVial ? vialData : tokenData
+    let data = isVial ? vialData : tokenData
     const error = isVial ? errorMintVials : errorMintToken
 
     useWaitForTransaction({
@@ -91,6 +91,9 @@ function MintButton({ image, name, description, isVial, numVials, type }: Props)
         onSuccess() {
             setIsMinting(false)
             setMinted(true)
+            setTimeout(() => {
+                setMinted(false)
+            }, 5000)
         }
     })
 
@@ -99,7 +102,7 @@ function MintButton({ image, name, description, isVial, numVials, type }: Props)
             {data &&
                 <TxHash hash={data?.hash} />
             }
-            <SolidButton loading={isMinting} isFinished={minted} isError={!!error} text="Mint" onClick={async () => {
+            <SolidButton loading={isMinting} isFinished={minted} isError={!!error} text="Mint" type='button' onClick={async () => {
                 const tokenUri = await uploadMetadataToIPFS()
                 isVial && numVials && vialPrice ? createVials?.({
                     recklesslySetUnpreparedArgs: [tokenUri, numVials, { value: (vialPrice.mul(BigNumber.from(numVials))), gasPrice: feeData?.gasPrice }]

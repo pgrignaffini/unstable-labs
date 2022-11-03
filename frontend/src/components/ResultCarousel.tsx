@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
 import MintButton from "./MintButton"
-import type { GeneratedImage } from "../../typings"
+import type { Generation } from "../../typings"
 import { ipfsGateway } from "../utils/constants"
 import { Type } from "../utils/constants"
 
 type Props = {
-    images: GeneratedImage[]
+    images: Generation[]
 }
 
 function ResultCarousel({ images }: Props) {
@@ -20,7 +20,7 @@ function ResultCarousel({ images }: Props) {
             <div className="modal">
                 <div className="relative">
                     <label htmlFor="zoom-modal" className="absolute right-2 top-2 font-pixel text-2xl text-white cursor-pointer">X</label>
-                    <img className='w-full h-full object-cover' src={imageToShow} alt="banner" />
+                    <img className='w-full h-full object-cover' src={"data:image/.webp;base64," + imageToShow} alt="banner" />
                 </div>
             </div>
             <input type="checkbox" id="result-modal" className="modal-toggle" />
@@ -33,7 +33,7 @@ function ResultCarousel({ images }: Props) {
                     }}>X</label>
                     <div className="bg-white bg-opacity-50 backdrop-blur-xl p-8">
                         <div className="flex items-start space-x-10">
-                            <img className='w-1/3' src={imageToShow} alt="image" />
+                            <img className='w-1/3' src={"data:image/.webp;base64," + imageToShow} alt="image" />
                             <form className="flex flex-1 flex-col space-y-6 ">
                                 <input
                                     type="text"
@@ -56,18 +56,18 @@ function ResultCarousel({ images }: Props) {
                 </div>
             </div>
             <div className='bg-gray-400 p-4 overflow-x-auto flex space-x-4'>
-                {images?.map((image: GeneratedImage, index: number) => (
+                {images?.map((image: Generation, index: number) => (
                     <div className="flex flex-col space-y-4 items-center " key={index}>
-                        <div onClick={() => setImageToShow(`${ipfsGateway}/${image.image}`)}>
+                        <div onClick={() => setImageToShow(image.img)}>
                             <div className='bg-gray-200 p-4 w-60 h-124 flex-none shadow-xl'>
                                 <label htmlFor="zoom-modal" className='cursor-pointer'>
-                                    <img src={`${ipfsGateway}/${image.image}`} />
+                                    <img src={"data:image/.webp;base64," + image.img} />
                                 </label>
                             </div>
                         </div>
                         <label htmlFor="result-modal" className='cursor-pointer mt-4'>
                             <div className="group flex space-x-2 items-end  w-fit bg-acid py-4 px-10"
-                                onClick={() => setImageToShow(`${ipfsGateway}/${image.image}`)}>
+                                onClick={() => setImageToShow(image.img)}>
                                 <p className="font-pixel text-md text-white">Brew</p>
                                 <div className="group-hover:animate-tremble">
                                     <img src="/flask.png" alt="flask" className="w-6" />

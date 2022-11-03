@@ -73,7 +73,7 @@ function YourNfts() {
                     <label htmlFor="listing-modal" className="font-pixel text-2xl text-white cursor-pointer">X</label>
                     <div className="bg-white bg-opacity-50 backdrop-blur-xl p-8">
                         <div className="flex items-center space-x-10">
-                            <img className='w-1/3' src={selectedNft?.image} alt="banner" />
+                            <img className='w-1/3' src={"data:image/.webp;base64," + selectedNft?.image} alt="banner" />
                             <div className="flex flex-1 flex-col space-y-6">
                                 <input type="number" placeholder="Price" step={0.1}
                                     value={price}

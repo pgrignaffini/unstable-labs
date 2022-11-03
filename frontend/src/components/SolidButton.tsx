@@ -8,13 +8,13 @@ interface Props {
   width?: string
   loading?: boolean
   isFinished?: boolean
-  isError?: boolean
+  isError?: boolean,
+  type?: 'button' | 'submit' | 'reset' | undefined
 }
 
-function SolidButton({ text, onClick, width, loading, isFinished, isError }: Props) {
+function SolidButton({ text, onClick, width, loading, isFinished, isError, type }: Props) {
 
   const [clicked, setClicked] = useState(false)
-
 
   return (
     <>
@@ -25,7 +25,7 @@ function SolidButton({ text, onClick, width, loading, isFinished, isError }: Pro
               `${text}ed`
           }</p>
         </div>
-        : <button type="submit" className={`relative font-pixel text-md text-white ${width}`} onPointerOver={() => setClicked(false)} onClick={() => {
+        : <button type={type} className={`relative font-pixel text-md text-white ${width}`} onPointerOver={() => setClicked(false)} onClick={(e) => {
           setClicked(true)
           onClick?.()
         }}>
