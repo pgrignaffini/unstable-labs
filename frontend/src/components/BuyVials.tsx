@@ -1,7 +1,7 @@
 import React from 'react'
 import MintButton from './MintButton'
 import NFTCard from './NFTCard'
-import { PurpleVial, YellowVial, GreenVial } from "../utils/constants"
+import { PurpleVial, YellowVial, GreenVial, BlueVial, BrownVial, OrangeVial, RedVial } from "../utils/constants"
 import type { Vial } from "../../typings"
 
 type Props = {}
@@ -62,6 +62,26 @@ function BuyVials({ }: Props) {
             <label htmlFor="buy-vial-modal" className='cursor-pointer mt-4'>
                 <div onClick={() => setVial(GreenVial)}>
                     <NFTCard nft={GreenVial} />
+                </div>
+            </label>
+            <label htmlFor="buy-vial-modal" className='cursor-pointer mt-4'>
+                <div onClick={() => setVial(BlueVial)}>
+                    <NFTCard nft={BlueVial} />
+                </div>
+            </label>
+            <label htmlFor="buy-vial-modal" className='cursor-pointer mt-4'>
+                <div onClick={() => setVial(BrownVial)}>
+                    <NFTCard nft={BrownVial} />
+                </div>
+            </label>
+            <label htmlFor="buy-vial-modal" className='cursor-pointer mt-4'>
+                <div onClick={() => setVial(OrangeVial)}>
+                    <NFTCard nft={OrangeVial} />
+                </div>
+            </label>
+            <label htmlFor="buy-vial-modal" className='cursor-pointer mt-4'>
+                <div onClick={() => setVial(RedVial)}>
+                    <NFTCard nft={RedVial} />
                 </div>
             </label>
         </div>

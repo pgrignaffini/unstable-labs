@@ -122,7 +122,7 @@ function YourNfts() {
                             {nfts?.map((nft: Nft, index: number) => (
                                 <label htmlFor="listing-modal" className='cursor-pointer mt-4'
                                     key={index} onClick={() => setSelectedNft(nft)}>
-                                    <NFTCard nft={nft} />
+                                    <NFTCard nft={nft} isVial={false} />
                                 </label>
                             ))}
                         </div>

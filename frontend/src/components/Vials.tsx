@@ -60,15 +60,27 @@ function Vials({ setVialToBurn, vialToBurn }: Props) {
     const purpleVials: Vial[] = groupedVials[Type.PurpleVial] || []
     const yellowVials: Vial[] = groupedVials[Type.YellowVial] || []
     const greenVials: Vial[] = groupedVials[Type.GreenVial] || []
+    const blueVials: Vial[] = groupedVials[Type.BlueVial] || []
+    const redVials: Vial[] = groupedVials[Type.RedVial] || []
+    const orangeVials: Vial[] = groupedVials[Type.OrangeVial] || []
+    const brownVials: Vial[] = groupedVials[Type.BrownVial] || []
 
     const displayVialCards = (
         <>
             {purpleVials.length > 0 &&
-                <NFTCard nft={purpleVials[0] as Vial} multiple={purpleVials.length} />}
+                <NFTCard nft={purpleVials[0] as Vial} multiple={purpleVials.length} isVial={true} />}
             {yellowVials.length > 0 &&
-                <NFTCard nft={yellowVials[0] as Vial} multiple={yellowVials.length} />}
+                <NFTCard nft={yellowVials[0] as Vial} multiple={yellowVials.length} isVial={true} />}
             {greenVials.length > 0 &&
-                <NFTCard nft={greenVials[0] as Vial} multiple={greenVials.length} />}
+                <NFTCard nft={greenVials[0] as Vial} multiple={greenVials.length} isVial={true} />}
+            {blueVials.length > 0 &&
+                <NFTCard nft={blueVials[0] as Vial} multiple={blueVials.length} isVial={true} />}
+            {redVials.length > 0 &&
+                <NFTCard nft={redVials[0] as Vial} multiple={redVials.length} isVial={true} />}
+            {orangeVials.length > 0 &&
+                <NFTCard nft={orangeVials[0] as Vial} multiple={orangeVials.length} isVial={true} />}
+            {brownVials.length > 0 &&
+                <NFTCard nft={brownVials[0] as Vial} multiple={brownVials.length} isVial={true} />}
         </>
     )
 
@@ -85,6 +97,22 @@ function Vials({ setVialToBurn, vialToBurn }: Props) {
             {greenVials.length > 0 &&
                 <div onClick={() => setVialToBurn?.(greenVials[0] as Vial)}>
                     <VialSelectionContainer selected={vialToBurn === (greenVials[0] as Vial)} vial={greenVials[0] as Vial} multiple={greenVials.length} />
+                </div>}
+            {blueVials.length > 0 &&
+                <div onClick={() => setVialToBurn?.(blueVials[0] as Vial)}>
+                    <VialSelectionContainer selected={vialToBurn === (blueVials[0] as Vial)} vial={blueVials[0] as Vial} multiple={blueVials.length} />
+                </div>}
+            {redVials.length > 0 &&
+                <div onClick={() => setVialToBurn?.(redVials[0] as Vial)}>
+                    <VialSelectionContainer selected={vialToBurn === (redVials[0] as Vial)} vial={redVials[0] as Vial} multiple={redVials.length} />
+                </div>}
+            {orangeVials.length > 0 &&
+                <div onClick={() => setVialToBurn?.(orangeVials[0] as Vial)}>
+                    <VialSelectionContainer selected={vialToBurn === (orangeVials[0] as Vial)} vial={orangeVials[0] as Vial} multiple={orangeVials.length} />
+                </div>}
+            {brownVials.length > 0 &&
+                <div onClick={() => setVialToBurn?.(brownVials[0] as Vial)}>
+                    <VialSelectionContainer selected={vialToBurn === (brownVials[0] as Vial)} vial={brownVials[0] as Vial} multiple={brownVials.length} />
                 </div>}
         </>
     )
