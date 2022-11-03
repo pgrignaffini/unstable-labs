@@ -41,3 +41,36 @@ export type Vial = {
     description: string;
     type: number;
 }
+
+export type Generation = {
+    img: string,
+    model: string,
+    seed: string,
+    worker_id: string,
+    worker_name: string,
+}
+
+export type Params = {
+    sampler_name: string,
+    cfg_scale: number,
+    steps: number,
+    n: number,
+}
+
+export type Status = {
+    done: boolean,
+    faulted: boolean,
+    finished: number,
+    processing: number,
+    queue_position: number,
+    wait_time: number,
+    waiting: number,
+}
+
+export type Option = {
+    value: string,
+    label: string,
+    prompt: string | undefined,
+    params: Params,
+    placeholders: Array<string>,
+}
