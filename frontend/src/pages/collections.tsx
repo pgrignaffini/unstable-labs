@@ -21,7 +21,7 @@ const Collections: NextPage = () => {
             <div className="col-span-1">
                 <CollectionSidebar setSelectedTab={setSelectedTab} />
             </div>
-            {selectedTab === 'trending' && <Trending />}
+            {/* {selectedTab === 'trending' && <Trending />} */}
             {selectedTab === 'your-nfts' && <YourNfts />}
             {selectedTab === 'vials' &&
                 <div className="col-span-2 grid grid-rows-4 gap-8 grid-cols-4">

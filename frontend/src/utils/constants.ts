@@ -5,6 +5,14 @@ const blueVialImage = "https://unstable-labs.infura-ipfs.io/ipfs/Qmcf69DasMBEJeQ
 const orangeVialImage = "https://unstable-labs.infura-ipfs.io/ipfs/QmTDHXScBPCrqJ7n9vzcewFWbNszrGKkeZSKxz3szwrKSY"
 const brownVialImage = "https://unstable-labs.infura-ipfs.io/ipfs/Qmd8XgkMcRo2xSft8zkFQDNZ4bQeRHvmqMDHrJcDpMDGVe"
 const redVialImage = "https://unstable-labs.infura-ipfs.io/ipfs/QmSMtBDcoH4Zj7JuHpLXDneDz6kYLSAkLN4fUfS6nbvV2w"
+const darkBlueVialImage = "https://unstable-labs.infura-ipfs.io/ipfs/QmPYPegRfdWb2YoXTbiWrhLF8m8U8gQps9NJYvRmyRfmrP"
+const darkGreenVialImage = "https://unstable-labs.infura-ipfs.io/ipfs/QmaMTF5o9H7Zub7VpRt1EkF3dzfVBUyVh6g98WxLsr2AyR"
+const darkPurpleVialImage = "https://unstable-labs.infura-ipfs.io/ipfs/QmXW6TffEtqQuUHZgR9MQ8KQUtGrCtjCj2S41yhk6exq5z"
+const aquaVialImage = "https://unstable-labs.infura-ipfs.io/ipfs/QmZcXZCqnNXkbM5d53VxrFcKAgqqaEpf1YBiznL252nH4F"
+const redBrownVialImage = "https://unstable-labs.infura-ipfs.io/ipfs/QmUvivAUVGRxW4Z6v4GdqkXmwc17tpvRhYZrABq51AtFBd"
+const lightBlueVialImage = "https://unstable-labs.infura-ipfs.io/ipfs/QmSrRHdtmJVqkmHxNCGBRg4YmmcFgBjhQghfBSfTPqjxr5"
+const pinkVialImage = "https://unstable-labs.infura-ipfs.io/ipfs/QmekhNGSpDf6NWnnriiuZRN2XC5wNGn6VxNSBr5pnn9xuL"
+
 export const ipfsGateway = "https://unstable-labs.infura-ipfs.io/ipfs"
 
 export const VialImages = {
@@ -15,6 +23,13 @@ export const VialImages = {
     orangeVialImage,
     brownVialImage,
     redVialImage,
+    darkBlueVialImage,
+    darkGreenVialImage,
+    darkPurpleVialImage,
+    aquaVialImage,
+    redBrownVialImage,
+    lightBlueVialImage,
+    pinkVialImage
 }
 
 export enum Type {
@@ -37,54 +52,3 @@ export enum Type {
     silhoutteWallpaper,
     needleFeltedObject,
 }
-
-
-// export const BlockStructuresVial = {
-//     name: "Block Structures",
-//     image: "https://unstable-labs.infura-ipfs.io/ipfs/QmWUQvTRUVmtBznRdrr9f9a5BHqrpgSzgrKi2GNYfojcTm",
-//     description: "A vial of liquid. Can be used to brew a new Block Structures Experiment.",
-//     type: Type.blockStructures,
-// }
-
-// export const FunkyPopVial = {
-//     name: "Funky Pop",
-//     image: "https://unstable-labs.infura-ipfs.io/ipfs/QmUUtavcmzuaahX2LQnzofn7Ta6HQZeGQBnPYmWDHdxPNW",
-//     description: "A vial of liquid. Can be used to brew a new Funky Pop Experiment.",
-//     type: Type.funkyPop,
-// }
-
-// export const SportTeamLogoVial = {
-//     name: "Sport Team Logo",
-//     image: "https://unstable-labs.infura-ipfs.io/ipfs/QmXxWKvXHt84nEGq8qnhbn6ZWU9ZveNz2zJjGFqNVWG1pU",
-//     description: "A vial of liquid. Can be used to brew a new Sport Team Logo Experiment.",
-//     type: Type.sportTeamLogo,
-// }
-
-// export const GoldPendantVial = {
-//     name: "Gold Pendant",
-//     image: "https://unstable-labs.infura-ipfs.io/ipfs/Qmcf69DasMBEJeQbH2vzL5Epzv1SsUXc9AHqSAE7CEjuSQ",
-//     description: "A vial of liquid. Can be used to brew a new Gold Pendant Experiment.",
-//     type: Type.goldPendant,
-// }
-
-// export const SurrealMicroWorldVial = {
-//     name: "Surreal Micro World",
-//     image: "https://unstable-labs.infura-ipfs.io/ipfs/QmTDHXScBPCrqJ7n9vzcewFWbNszrGKkeZSKxz3szwrKSY",
-//     description: "A vial of liquid. Can be used to brew a new Surreal Micro World Experiment.",
-//     type: Type.surrealMicroWorld,
-// }
-
-// export const CuteStickerVial = {
-//     name: "Cute Sticker",
-//     image: "https://unstable-labs.infura-ipfs.io/ipfs/Qmd8XgkMcRo2xSft8zkFQDNZ4bQeRHvmqMDHrJcDpMDGVe",
-//     description: "A vial of liquid. Can be used to brew a new Cute Sticker Experiment.",
-//     type: Type.cuteSticker,
-// }
-
-// export const PsychedelicPopArtVial = {
-//     name: "Psychedelic Pop Art",
-//     image: "https://unstable-labs.infura-ipfs.io/ipfs/QmSMtBDcoH4Zj7JuHpLXDneDz6kYLSAkLN4fUfS6nbvV2w",
-//     description: "A vial of liquid. Can be used to brew a new Psychedelic Pop Art Experiment.",
-//     type: Type.psychedelicPopArt,
-// }
-

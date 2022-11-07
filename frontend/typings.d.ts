@@ -40,6 +40,7 @@ export type Vial = {
     image: string;
     description: string;
     type: number;
+    preview: string;
 }
 
 export type Generation = {

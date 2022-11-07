@@ -9,6 +9,7 @@ import { groupBy } from '../utils/helpers'
 import { Type } from '../utils/constants';
 import VialSelectionContainer from './VialSelectionContainer';
 import { BigNumber } from 'ethers';
+import { Vials as Previews } from "../utils/vials"
 
 type Props = {
     vialToBurn?: Vial | undefined
@@ -18,6 +19,7 @@ type Props = {
 function Vials({ setVialToBurn, vialToBurn }: Props) {
 
     const { address } = useAccount()
+    const [selectedVial, setSelectedVial] = React.useState<Vial | undefined>(undefined)
 
     const { data: ownedTokenIds } = useContractRead({
         addressOrName: vialContractInfo.address,
@@ -56,13 +58,38 @@ function Vials({ setVialToBurn, vialToBurn }: Props) {
         refetchOnWindowFocus: true,
     })
 
+    const vialInfoModal = (vial: Vial) => (
+        <>
+            <input type="checkbox" id="info-vial-modal" className="modal-toggle" />
+            <div className="modal">
+                <div className="w-1/3">
+                    <label htmlFor="info-vial-modal" className="font-pixel text-2xl text-white cursor-pointer">X</label>
+                    <div className="bg-white bg-opacity-50 backdrop-blur-xl p-8">
+                        <div className="flex items-center space-x-10">
+                            <img className='w-1/3' src={vial?.image} alt="banner" />
+                            <div className='flex flex-col space-y-10 items-start'>
+                                <p className='font-pixel text-sm text-black'>{vial?.name} vial</p>
+                                <img className='w-full' src={Previews[vial?.type]?.preview} alt="preview" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </>
+    )
+
     const groupedVials = vials ? groupBy(vials, 'type') : []
 
     const displayVialCards = (
         <>
-            {Object.keys(groupedVials).map((key) => {
-                const vials = groupedVials[key]
-                return (vials.length > 0 && <NFTCard nft={vials[0] as Vial} multiple={vials.length} isVial={true} />)
+            {Object.keys(groupedVials).map((key, index) => {
+                const vials: Vial[] = groupedVials[key]
+                return (
+                    vials.length > 0 &&
+                    <label htmlFor="info-vial-modal" onClick={() => setSelectedVial(vials[0])}>
+                        <NFTCard key={index} nft={vials[0] as Vial} multiple={vials.length} isVial={true} />
+                    </label>
+                )
             })}
         </>
     )
@@ -82,6 +109,7 @@ function Vials({ setVialToBurn, vialToBurn }: Props) {
 
     return (
         <>
+            {vialInfoModal(selectedVial as Vial)}
             {setVialToBurn ? displayVialSelectionGrid : displayVialCards}
         </>
     )

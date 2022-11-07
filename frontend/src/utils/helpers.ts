@@ -1,6 +1,7 @@
 import type { MarketItem } from "../../typings";
 import type { Nft } from "../../typings";
 import { create } from 'ipfs-http-client';
+import { Vials } from "./vials";
 
 
 export const parseNftPrice = (nft: Nft & MarketItem) => {

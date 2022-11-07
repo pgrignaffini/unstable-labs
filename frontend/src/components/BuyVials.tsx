@@ -4,9 +4,7 @@ import NFTCard from './NFTCard'
 import { Vials } from "../utils/vials"
 import type { Vial } from "../../typings"
 
-type Props = {}
-
-function BuyVials({ }: Props) {
+function BuyVials() {
 
     const [numVials, setNumVials] = React.useState<number>(1)
     const [vial, setVial] = React.useState<Vial>()
@@ -22,7 +20,8 @@ function BuyVials({ }: Props) {
                         <div className="flex items-center space-x-10">
                             <img className='w-1/3' src={vial.image} alt="banner" />
                             <div className='flex flex-col space-y-10 items-start'>
-                                <p className='font-pixel text-sm text-black'>{vial.name}</p>
+                                <p className='font-pixel text-sm text-black'>{vial.name} vial</p>
+                                <img className='w-full' src={vial?.preview} alt="preview" />
                                 <div className="flex items-center space-x-4">
                                     <p className='font-pixel text-md text-black'>Quantity:</p>
                                     <input type="number" placeholder="Price" step={1}
@@ -50,10 +49,8 @@ function BuyVials({ }: Props) {
         <div className="col-span-2 grid grid-rows-4 gap-8 grid-cols-4">
             {buyVialModal}
             {Vials.map((vial) => (
-                <label htmlFor="buy-vial-modal" className='cursor-pointer mt-4'>
-                    <div onClick={() => setVial(vial)}>
-                        <NFTCard nft={vial} isVial />
-                    </div>
+                <label htmlFor="buy-vial-modal" onClick={() => setVial(vial)} className='cursor-pointer mt-4'>
+                    <NFTCard nft={vial} isVial />
                 </label>
             ))}
         </div>

@@ -72,16 +72,16 @@ function YourNfts() {
                 <div className="w-1/3">
                     <label htmlFor="listing-modal" className="font-pixel text-2xl text-white cursor-pointer">X</label>
                     <div className="bg-white bg-opacity-50 backdrop-blur-xl p-8">
-                        <div className="flex items-center space-x-10">
-                            <img className='w-1/3' src={"data:image/.webp;base64," + selectedNft?.image} alt="banner" />
-                            <div className="flex flex-1 flex-col space-y-6">
-                                <input type="number" placeholder="Price" step={0.1}
-                                    value={price}
-                                    className="bg-white bg-opacity-50 backdrop-blur-xl p-2
+                        <div className="flex flex-col space-y-6">
+                            <p className="font-pixel text-xl text-center text-white">{selectedNft?.name}</p>
+                            <img className='w-full' src={"data:image/.webp;base64," + selectedNft?.image} alt="banner" />
+                            {selectedNft?.description && <p className="font-pixel text-md italic text-center text-black">"{selectedNft.description}"</p>}
+                            <input type="number" placeholder="Price" step={0.1}
+                                value={price}
+                                className="bg-white bg-opacity-50 backdrop-blur-xl p-2
                                     outline-none font-pixel text-black placeholder:font-pixel text-sm placeholder:text-sm"
-                                    onChange={(e) => setPrice(e.target.value)} />
-                                {/* {selectedNft && <ListButton refetch={[refetchNfts, refetchNftsOnMarket]} tokenId={selectedNft?.tokenId as string} price={price} />} */}
-                            </div>
+                                onChange={(e) => setPrice(e.target.value)} />
+                            {/* {selectedNft && <ListButton refetch={[refetchNfts, refetchNftsOnMarket]} tokenId={selectedNft?.tokenId as string} price={price} />} */}
                         </div>
                     </div>
                 </div>
