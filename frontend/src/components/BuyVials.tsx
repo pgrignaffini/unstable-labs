@@ -1,7 +1,7 @@
 import React from 'react'
 import MintButton from './MintButton'
 import NFTCard from './NFTCard'
-import { PurpleVial, YellowVial, GreenVial, BlueVial, BrownVial, OrangeVial, RedVial } from "../utils/constants"
+import { Vials } from "../utils/vials"
 import type { Vial } from "../../typings"
 
 type Props = {}
@@ -49,41 +49,13 @@ function BuyVials({ }: Props) {
     return (
         <div className="col-span-2 grid grid-rows-4 gap-8 grid-cols-4">
             {buyVialModal}
-            <label htmlFor="buy-vial-modal" className='cursor-pointer mt-4'>
-                <div onClick={() => setVial(PurpleVial)}>
-                    <NFTCard nft={PurpleVial} isVial />
-                </div>
-            </label>
-            <label htmlFor="buy-vial-modal" className='cursor-pointer mt-4'>
-                <div onClick={() => setVial(YellowVial)}>
-                    <NFTCard nft={YellowVial} isVial />
-                </div>
-            </label>
-            <label htmlFor="buy-vial-modal" className='cursor-pointer mt-4'>
-                <div onClick={() => setVial(GreenVial)}>
-                    <NFTCard nft={GreenVial} isVial />
-                </div>
-            </label>
-            <label htmlFor="buy-vial-modal" className='cursor-pointer mt-4'>
-                <div onClick={() => setVial(BlueVial)}>
-                    <NFTCard nft={BlueVial} isVial />
-                </div>
-            </label>
-            <label htmlFor="buy-vial-modal" className='cursor-pointer mt-4'>
-                <div onClick={() => setVial(BrownVial)}>
-                    <NFTCard nft={BrownVial} isVial />
-                </div>
-            </label>
-            <label htmlFor="buy-vial-modal" className='cursor-pointer mt-4'>
-                <div onClick={() => setVial(OrangeVial)}>
-                    <NFTCard nft={OrangeVial} isVial={true} />
-                </div>
-            </label>
-            <label htmlFor="buy-vial-modal" className='cursor-pointer mt-4'>
-                <div onClick={() => setVial(RedVial)}>
-                    <NFTCard nft={RedVial} isVial={true} />
-                </div>
-            </label>
+            {Vials.map((vial) => (
+                <label htmlFor="buy-vial-modal" className='cursor-pointer mt-4'>
+                    <div onClick={() => setVial(vial)}>
+                        <NFTCard nft={vial} isVial />
+                    </div>
+                </label>
+            ))}
         </div>
     )
 }

@@ -10,6 +10,7 @@ function TestPage() {
     const [requestID, setRequestID] = React.useState<string | null>(null)
     const [generatedImages, setGeneratedImages] = React.useState<Generation[]>([])
     const [status, setStatus] = React.useState<Status | null>(null)
+    const [image, setImage] = React.useState<string | null>(null)
 
     const generate = async (prompt: string) => {
         setGeneratedImages([])
@@ -76,6 +77,28 @@ function TestPage() {
         generate(newPrompt!)
     }
 
+    const text2Image = () => {
+        axios.post('https://t402ufstkbijfn-64410ba0-3000.proxy.runpod.io/sdapi/v1/txt2img', {
+            prompt: "tiny cute super mario toy, standing character, soft smooth lighting, soft pastel colors, skottie young, 3d blender render, polycount, modular export constructivism, pop surrealism, physically based rendering, square image",
+        }, {
+            headers: {
+                'accept': 'application/json',
+                'Content-Type': 'application/json',
+            }
+        }).then(function (response) {
+            console.log(response.data.images[0]);
+            setImage(response.data.images[0])
+        }).catch(function (error) {
+            console.log(error);
+        });
+    }
+
+    const { data, isLoading } = useQuery('text2Img', text2Image, {
+        enabled: true,
+    })
+
+    console.log(isLoading)
+
     return (
         <div className='min-h-screen flex justify-center items-center'>
             <div className='flex flex-col justify-center space-y-10'>
@@ -115,6 +138,7 @@ function TestPage() {
                     })
                 }
             </div>
+            <img src={"data:image/.webp;base64," + image} alt="image" />
         </div>
     )
 }

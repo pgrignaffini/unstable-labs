@@ -41,11 +41,9 @@ function BuyButton({ marketItemId, price }: Props) {
     })
 
     return (
-        <div className='flex flex-col space-y-2 items-center justify-center'>
-            {data &&
-                <TxHash hash={data?.hash} />
-            }
+        <div className='flex flex-col space-y-5 items-center justify-center'>
             <SolidButton text="Buy" isFinished={bought} loading={isBuying} onClick={() => buyNft?.()} />
+            {data && <TxHash hash={data?.hash} />}
         </div>
     )
 }

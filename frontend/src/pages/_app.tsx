@@ -9,13 +9,10 @@ import type { AppRouter } from "../server/router";
 import type { Session } from "next-auth";
 import "../styles/globals.css";
 import dynamic from 'next/dynamic'
-import { WagmiConfig, createClient, configureChains, chain, Chain } from 'wagmi'
-import { alchemyProvider } from 'wagmi/providers/alchemy'
+import { WagmiConfig, createClient, configureChains, Chain } from 'wagmi'
 import { infuraProvider } from 'wagmi/providers/infura'
 import { publicProvider } from 'wagmi/providers/public'
 import Footer from "../components/Footer";
-import { Alchemy, Network } from "alchemy-sdk";
-import { AppWrapper } from "../context/AppContext";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from 'react-query/devtools'
 
@@ -41,13 +38,6 @@ const Aurora: Chain = {
   },
   testnet: true,
 }
-
-const config = {
-  apiKey: process.env.ALCHEMY_API_KEY,
-  network: Network.MATIC_MUMBAI,
-};
-
-const alchemy = new Alchemy(config);
 
 const { provider } = configureChains([Aurora], [
   infuraProvider({ apiKey: process.env.INFURA_API_KEY }),
@@ -76,13 +66,11 @@ const MyApp: AppType<{ session: Session | null }> = ({
     <SessionProvider session={session}>
       <WagmiConfig client={client}>
         <QueryClientProvider client={queryClient}>
-          <AppWrapper alchemySdk={alchemy}>
-            <div className="bg-black min-h-screen">
-              <Header />
-              <Component {...pageProps} />
-              <Footer />
-            </div>
-          </AppWrapper>
+          <div className="bg-black min-h-screen">
+            <Header />
+            <Component {...pageProps} />
+            <Footer />
+          </div>
           <ReactQueryDevtools initialIsOpen={false} />
         </QueryClientProvider>
       </WagmiConfig>

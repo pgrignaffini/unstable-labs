@@ -1,5 +1,5 @@
 import type { MarketItem } from "../../typings";
-import type { Nft } from "alchemy-sdk"
+import type { Nft } from "../../typings";
 import { create } from 'ipfs-http-client';
 
 

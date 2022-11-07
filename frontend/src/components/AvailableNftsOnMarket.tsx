@@ -1,20 +1,18 @@
 import React from 'react'
 import marketplaceContractInfo from "../../../contracts/abi/marketplace.json"
 import { useContractRead, useAccount } from 'wagmi'
-import type { Nft } from "alchemy-sdk"
 import type { MarketItem } from '../../typings'
 import nftContractInfo from "../../../contracts/abi/nft.json"
 import { useQuery } from "react-query";
-import { useAppContext } from '../context/AppContext'
 import BuyButton from './BuyButton'
 import NFTCard from './NFTCard'
 import { parseNftPrice } from '../utils/helpers'
+import type { Nft } from '../../typings'
 
 type Props = {}
 
 function AvailableNftsOnMarket({ }: Props) {
 
-    const { alchemySdk } = useAppContext()
     const { address } = useAccount()
 
     const [selectedNft, setSelectedNft] = React.useState<Nft & MarketItem | undefined>(undefined)
