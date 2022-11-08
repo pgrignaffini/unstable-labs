@@ -14,13 +14,13 @@ function BuyVials() {
         <>
             <input type="checkbox" id="buy-vial-modal" className="modal-toggle" />
             <div className="modal">
-                <div className="w-1/3">
+                <div className="w-1/2 m-auto">
                     <label htmlFor="buy-vial-modal" className="font-pixel text-2xl text-white cursor-pointer">X</label>
                     <div className="bg-white bg-opacity-50 backdrop-blur-xl p-8">
                         <div className="flex items-center space-x-10">
                             <img className='w-1/3' src={vial.image} alt="banner" />
                             <div className='flex flex-col space-y-10 items-start'>
-                                <p className='font-pixel text-sm text-black'>{vial.name} vial</p>
+                                <p className='font-pixel text-lg text-black'>{vial.name} vial</p>
                                 <img className='w-full' src={vial?.preview} alt="preview" />
                                 <div className="flex items-center space-x-4">
                                     <p className='font-pixel text-md text-black'>Quantity:</p>
@@ -46,14 +46,16 @@ function BuyVials() {
     )
 
     return (
-        <div className="col-span-2 grid grid-rows-4 gap-8 grid-cols-4">
-            {buyVialModal}
+        <>
+        {buyVialModal}
+        <div className="col-span-2 grid grid-rows-4 gap-8 grid-cols-3 2xl:grid-cols-4">
             {Vials.map((vial) => (
                 <label htmlFor="buy-vial-modal" onClick={() => setVial(vial)} className='cursor-pointer mt-4'>
                     <NFTCard nft={vial} isVial />
                 </label>
             ))}
         </div>
+        </>
     )
 }
 

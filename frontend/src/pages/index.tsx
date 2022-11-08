@@ -121,12 +121,12 @@ const Home: NextPage = () => {
         newPrompt = newPrompt?.replace(`${index}`, userInput)
       })
       console.log("New prompt " + newPrompt)
-      setPrompt(newPrompt!)
       await burnVial?.().catch((error) => {
         console.log(error)
         return
       })
       generate(newPrompt!)
+      setPrompt(newPrompt!)
       setVialToBurn(undefined)
     }
   }
@@ -135,13 +135,11 @@ const Home: NextPage = () => {
     <>
       <input type="checkbox" id="select-vial-modal" className="modal-toggle" />
       <div className="modal">
-        <div className="w-1/2 h-1/3">
+        <div className="w-2/3 h-1/3">
           <label htmlFor="select-vial-modal" className="font-pixel text-2xl text-white cursor-pointer"
             onClick={() => setVialToBurn(undefined)}>X</label>
           <div className="bg-gray-400 bg-opacity-50 backdrop-blur-xl p-8">
-            <div className="grid md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 p-2 gap-4">
-              <Vials setVialToBurn={setVialToBurn} vialToBurn={vialToBurn} />
-            </div>
+            <Vials setVialToBurn={setVialToBurn} vialToBurn={vialToBurn} />
             <div className="flex sm:text-center justify-end">
               <label htmlFor="select-vial-modal"
                 className="p-2 border-acid border-2 w-fit font-pixel text-lg text-white cursor-pointer hover:bg-slate-400">Select</label>
@@ -206,7 +204,7 @@ const Home: NextPage = () => {
         }
         {generatedImages &&
           <div className="w-full mt-24">
-            <ResultCarousel images={generatedImages} />
+            <ResultCarousel images={generatedImages} prompt={prompt} />
           </div>}
         <div className="mt-24 flex justify-evenly">
           <img src="/barrel-toxic.gif" alt="barrel" className="w-24" />

@@ -1,10 +1,10 @@
 import type { MarketItem } from "../../typings";
-import type { Nft } from "../../typings";
+import type { Experiment } from "../../typings";
 import { create } from 'ipfs-http-client';
 import { Vials } from "./vials";
 
 
-export const parseNftPrice = (nft: Nft & MarketItem) => {
+export const parseNftPrice = (nft: Experiment & MarketItem) => {
     return parseInt(nft?.price?._hex, 16) / 10 ** 18
 }
 

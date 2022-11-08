@@ -13,11 +13,12 @@ type Props = {
     name: string;
     type: Type;
     description?: string;
+    prompt?: string;
     isVial?: boolean;
     numVials?: number;
 }
 
-function MintButton({ image, name, description, isVial, numVials, type }: Props) {
+function MintButton({ image, name, description, isVial, prompt, numVials, type }: Props) {
 
     const [minted, setMinted] = React.useState<boolean>(false)
     const [isMinting, setIsMinting] = React.useState<boolean>(false)
@@ -30,6 +31,7 @@ function MintButton({ image, name, description, isVial, numVials, type }: Props)
             description,
             image,
             type,
+            prompt,
         }
         console.log(nftJSON)
         try {

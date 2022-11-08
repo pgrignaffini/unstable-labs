@@ -7,7 +7,7 @@ export type MarketItem = {
     creator: string;
     seller: string;
     owner: string;
-    price: { _hex: string, _isBigNumber: boolean };
+    price: BigNumber;
     sold: boolean;
     canceled: boolean;
 }
@@ -26,12 +26,13 @@ export type NftURI = {
     tokenURI: string;
 }
 
-export type Nft = {
-    tokenId: BigNumber;
+export type Experiment = {
+    tokenId?: BigNumber;
     name: string;
     description: string;
     image: string;
     type: number;
+    prompt: string;
 }
 
 export type Vial = {

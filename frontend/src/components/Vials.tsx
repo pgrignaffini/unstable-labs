@@ -1,14 +1,12 @@
 import React from 'react'
 import vialContractInfo from "../../../contracts/abi/vialNFT.json"
 import { useAccount, useContractRead } from "wagmi"
-import type { Nft, NftURI, Vial } from "../../typings";
+import type { NftURI, Vial } from "../../typings";
 import { useQuery } from 'react-query'
 import axios from 'axios'
 import NFTCard from './NFTCard';
 import { groupBy } from '../utils/helpers'
-import { Type } from '../utils/constants';
 import VialSelectionContainer from './VialSelectionContainer';
-import { BigNumber } from 'ethers';
 import { Vials as Previews } from "../utils/vials"
 
 type Props = {
@@ -42,9 +40,9 @@ function Vials({ setVialToBurn, vialToBurn }: Props) {
         }
     })
 
-    const getOwnedVials = async (): Promise<Nft[]> => {
+    const getOwnedVials = async (): Promise<Vial[]> => {
         const ownedNfts = await Promise.all(
-            (ownedTokenURIs as NftURI[])?.map(async (nftURI): Promise<Nft> => {
+            (ownedTokenURIs as NftURI[])?.map(async (nftURI): Promise<Vial> => {
                 const { data: nft } = await axios.get(nftURI.tokenURI)
                 const tokenId = nftURI.tokenId.toString()
                 return { tokenId, ...nft }
@@ -81,7 +79,7 @@ function Vials({ setVialToBurn, vialToBurn }: Props) {
     const groupedVials = vials ? groupBy(vials, 'type') : []
 
     const displayVialCards = (
-        <>
+        <div className="col-span-2 grid grid-rows-4 gap-8 grid-cols-3 2xl:grid-cols-4">
             {Object.keys(groupedVials).map((key, index) => {
                 const vials: Vial[] = groupedVials[key]
                 return (
@@ -91,11 +89,11 @@ function Vials({ setVialToBurn, vialToBurn }: Props) {
                     </label>
                 )
             })}
-        </>
+        </div>
     )
 
     const displayVialSelectionGrid = (
-        <>
+        <div className="grid md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 p-2 gap-4">
             {Object.keys(groupedVials).map((key) => {
                 const vials = groupedVials[key]
                 return (vials.length > 0 &&
@@ -104,7 +102,7 @@ function Vials({ setVialToBurn, vialToBurn }: Props) {
                     </div>
                 )
             })}
-        </>
+        </div>
     )
 
     return (

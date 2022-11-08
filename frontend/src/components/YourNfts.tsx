@@ -6,12 +6,12 @@ import { useAccount } from "wagmi"
 import nftContractInfo from "../../../contracts/abi/nft.json"
 import { useContractRead } from 'wagmi'
 import axios from 'axios'
-import type { Nft, NftURI } from "../../typings"
+import type { Experiment, NftURI } from "../../typings"
 
 function YourNfts() {
 
     const { address } = useAccount()
-    const [selectedNft, setSelectedNft] = React.useState<Nft | undefined>(undefined)
+    const [selectedNft, setSelectedNft] = React.useState<Experiment | undefined>(undefined)
     const [price, setPrice] = React.useState<string>("0.1")
 
     const { data: ownedTokenIds } = useContractRead({
@@ -49,9 +49,9 @@ function YourNfts() {
     //         return ownedNfts
     //)
 
-    const getOwnedNfts = async (): Promise<Nft[]> => {
+    const getOwnedNfts = async (): Promise<Experiment[]> => {
         const ownedNfts = await Promise.all(
-            (ownedTokenURIs as NftURI[])?.map(async (nftURI): Promise<Nft> => {
+            (ownedTokenURIs as NftURI[])?.map(async (nftURI): Promise<Experiment> => {
                 const { data: nft } = await axios.get(nftURI.tokenURI)
                 const tokenId = nftURI.tokenId.toString()
                 return { tokenId, ...nft }
@@ -118,8 +118,8 @@ function YourNfts() {
                 <div className="flex items-center justify-center"><Loader /></div> :
                 (
                     <>
-                        <div className="col-span-2 grid grid-rows-4 gap-8 grid-cols-4">
-                            {nfts?.map((nft: Nft, index: number) => (
+                        <div className="col-span-2 grid grid-rows-4 gap-8 grid-cols-3 2xl:grid-cols-4">
+                            {nfts?.map((nft: Experiment, index: number) => (
                                 <label htmlFor="listing-modal" className='cursor-pointer mt-4'
                                     key={index} onClick={() => setSelectedNft(nft)}>
                                     <NFTCard nft={nft} isVial={false} />

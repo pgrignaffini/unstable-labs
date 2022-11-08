@@ -10,7 +10,8 @@ type Props = {
     name: string;
     description: string | undefined;
     image: string;
-    type: number
+    type: number;
+    prompt?: string;
 }
 
 export const uploadJSONToIPFS = async (JSONBody: Props) => {
@@ -20,7 +21,8 @@ export const uploadJSONToIPFS = async (JSONBody: Props) => {
             "name": JSONBody.name,
             "description": JSONBody.description,
             "image": JSONBody.image,
-            "type": JSONBody.type
+            "type": JSONBody.type,
+            "prompt": JSONBody.prompt
         }
     })
 

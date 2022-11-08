@@ -6,9 +6,10 @@ import { Type } from "../utils/constants"
 
 type Props = {
     images: Generation[]
+    prompt: string
 }
 
-function ResultCarousel({ images }: Props) {
+function ResultCarousel({ images, prompt }: Props) {
 
     const [imageToShow, setImageToShow] = useState<string>("")
     const [name, setName] = useState<string>("")
@@ -25,7 +26,7 @@ function ResultCarousel({ images }: Props) {
             </div>
             <input type="checkbox" id="result-modal" className="modal-toggle" />
             <div className="modal">
-                <div className="w-1/3">
+                <div className="w-1/2">
                     <label htmlFor="result-modal" className="font-pixel text-2xl text-white cursor-pointer" onClick={() => {
                         setName("")
                         setDescription("")
@@ -48,7 +49,7 @@ function ResultCarousel({ images }: Props) {
                                   outline-none text-black font-pixel placeholder:font-pixel text-sm placeholder:text-sm"
                                     placeholder="Enter description..." onChange={(e) => setDescription(e.target.value)} />
                                 <div className="mx-auto">
-                                    <MintButton image={imageToShow} name={name} description={description} type={Type.Experiment} />
+                                    <MintButton image={imageToShow} name={name} description={description} type={Type.Experiment} prompt={prompt} />
                                 </div>
                             </form>
                         </div>
