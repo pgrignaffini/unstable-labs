@@ -12,11 +12,12 @@ import { usePrepareContractWrite, useContractWrite, useWaitForTransaction } from
 import vialContractInfo from "../../../contracts/abi/vialNFT.json";
 import type { Generation, Status, Option } from "../../typings"
 import { options } from "../utils/options"
+import { Type } from "../utils/constants";
 
 const Home: NextPage = () => {
 
   const [vialToBurn, setVialToBurn] = React.useState<Vial | undefined>(undefined);
-  const [selected, setSelected] = React.useState<Option | undefined>(undefined)
+  const [selectedOption, setSelectedOption] = React.useState<Option | undefined>(undefined)
   const [prompt, setPrompt] = React.useState<string>("")
   const [requestID, setRequestID] = React.useState<string | null>(null)
   const [generatedImages, setGeneratedImages] = React.useState<Generation[] | undefined>(undefined)
@@ -26,7 +27,7 @@ const Home: NextPage = () => {
   React.useEffect(() => {
     if (vialToBurn) {
       const option = options.find(option => option.type === vialToBurn.type)
-      setSelected(option)
+      setSelectedOption(option)
       console.log("Selected option: ", option?.label)
     }
   }, [vialToBurn])
@@ -38,7 +39,7 @@ const Home: NextPage = () => {
     console.log("Generating image with prompt: ", prompt)
     axios.post('https://stablehorde.net/api/v2/generate/async', {
       prompt: prompt,
-      params: selected?.params,
+      params: selectedOption?.params,
     }, {
       headers: {
         'apikey': process.env.NEXT_PUBLIC_STABLE_HORDE_API_KEY
@@ -115,8 +116,8 @@ const Home: NextPage = () => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     if (vialToBurn) {
-      let newPrompt = selected?.prompt
-      selected?.placeholders.map((_, index) => {
+      let newPrompt = selectedOption?.prompt
+      selectedOption?.placeholders.map((_, index) => {
         const userInput = (document.getElementById(`input-${index}`) as HTMLInputElement).value
         newPrompt = newPrompt?.replace(`${index}`, userInput)
       })
@@ -171,7 +172,7 @@ const Home: NextPage = () => {
         </div>
         <img src="/brewery-animated.gif" className="w-72 mx-auto mt-16" />
         <div className="bg-gray-400 p-6 w-2/3 mx-auto mt-16 row-start-3 col-start-3">
-          {selected && <p className="font-pixel text-[0.5rem] text-black">{selected.label}</p>}
+          {selectedOption && <p className="font-pixel text-[0.5rem] text-black">{selectedOption.label}</p>}
           <div className="flex items-center space-x-3 justify-between">
             <label htmlFor="select-vial-modal" className="cursor-pointer" >
               <div className="h-12 w-12 border-2 border-acid bg-white">
@@ -179,9 +180,9 @@ const Home: NextPage = () => {
               </div>
             </label>
             {!vialToBurn && <p className="pt-2 font-pixel text-[0.6rem] text-red-500">Please select a vial to start</p>}
-            {selected &&
+            {selectedOption &&
               <form className='flex space-x-5 items-center' onSubmit={handleSubmit}>
-                {selected?.placeholders?.map((key, index) => (
+                {selectedOption?.placeholders?.map((key, index) => (
                   <input key={key} id={`input-${index}`} className='w-full p-4 placeholder:font-pixel text-black outline-none font-pixel' required placeholder={key} />
                 ))}
                 <SolidButton text="Brew" type="submit" loading={status?.done === false} isFinished={status?.done} />
@@ -204,7 +205,7 @@ const Home: NextPage = () => {
         }
         {generatedImages &&
           <div className="w-full mt-24">
-            <ResultCarousel images={generatedImages} prompt={prompt} />
+            <ResultCarousel images={generatedImages} prompt={prompt} generatedByType={selectedOption?.type as Type} />
           </div>}
         <div className="mt-24 flex justify-evenly">
           <img src="/barrel-toxic.gif" alt="barrel" className="w-24" />

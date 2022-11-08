@@ -14,6 +14,7 @@ const lightBlueVialImage = "https://unstable-labs.infura-ipfs.io/ipfs/QmSrRHdtmJ
 const pinkVialImage = "https://unstable-labs.infura-ipfs.io/ipfs/QmekhNGSpDf6NWnnriiuZRN2XC5wNGn6VxNSBr5pnn9xuL"
 
 export const ipfsGateway = "https://unstable-labs.infura-ipfs.io/ipfs"
+export const pinataGateway = "https://ivory-absolute-antelope-563.mypinata.cloud/ipfs"
 
 export const VialImages = {
     purpleVialImage,

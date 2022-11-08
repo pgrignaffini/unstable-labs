@@ -33,6 +33,7 @@ export type Experiment = {
     image: string;
     type: number;
     prompt: string;
+    generatedByType: number;
 }
 
 export type Vial = {

@@ -4,6 +4,7 @@ import nftContractInfo from "../../../contracts/abi/nft.json"
 import vialContractInfo from "../../../contracts/abi/vialNFT.json"
 import { useContractWrite, useWaitForTransaction, useContractRead, useFeeData } from 'wagmi'
 import { uploadJSONToIPFS } from "../utils/pinata"
+import { pinataGateway } from '../utils/constants';
 import TxHash from './TxHash';
 import { BigNumber } from 'ethers'
 import { Type } from "../utils/constants"
@@ -13,12 +14,13 @@ type Props = {
     name: string;
     type: Type;
     description?: string;
+    generatedByType?: Type;
     prompt?: string;
     isVial?: boolean;
     numVials?: number;
 }
 
-function MintButton({ image, name, description, isVial, prompt, numVials, type }: Props) {
+function MintButton({ ...props }: Props) {
 
     const [minted, setMinted] = React.useState<boolean>(false)
     const [isMinting, setIsMinting] = React.useState<boolean>(false)
@@ -27,17 +29,18 @@ function MintButton({ image, name, description, isVial, prompt, numVials, type }
 
     const uploadMetadataToIPFS = async () => {
         const nftJSON = {
-            name,
-            description,
-            image,
-            type,
-            prompt,
+            name: props.name,
+            description: props.description,
+            type: props.type,
+            prompt: props.prompt,
+            generatedByType: props.generatedByType,
+            image: props.image,
         }
         console.log(nftJSON)
         try {
             const response = await uploadJSONToIPFS(nftJSON);
             if (response.status === 200) {
-                const pinataURL = "https://gateway.pinata.cloud/ipfs/" + response.data.IpfsHash
+                const pinataURL = pinataGateway + "/" + response.data.IpfsHash
                 console.log("Uploaded metadata to Pinata: ", pinataURL);
                 return pinataURL;
             }
@@ -46,7 +49,7 @@ function MintButton({ image, name, description, isVial, prompt, numVials, type }
         }
     }
 
-    if (isVial && numVials) {
+    if (props.isVial && props.numVials) {
         useContractRead({
             addressOrName: vialContractInfo.address,
             contractInterface: JSON.stringify(vialContractInfo.abi),
@@ -82,8 +85,8 @@ function MintButton({ image, name, description, isVial, prompt, numVials, type }
         }
     })
 
-    let data = isVial ? vialData : tokenData
-    const error = isVial ? errorMintVials : errorMintToken
+    let data = props.isVial ? vialData : tokenData
+    const error = props.isVial ? errorMintVials : errorMintToken
 
     useWaitForTransaction({
         hash: data?.hash,
@@ -106,8 +109,8 @@ function MintButton({ image, name, description, isVial, prompt, numVials, type }
             }
             <SolidButton loading={isMinting} isFinished={minted} isError={!!error} text="Mint" type='button' onClick={async () => {
                 const tokenUri = await uploadMetadataToIPFS()
-                isVial && numVials && vialPrice ? createVials?.({
-                    recklesslySetUnpreparedArgs: [tokenUri, numVials, { value: (vialPrice.mul(BigNumber.from(numVials))), gasPrice: feeData?.gasPrice }]
+                props.isVial && props.numVials && vialPrice ? createVials?.({
+                    recklesslySetUnpreparedArgs: [tokenUri, props.numVials, { value: (vialPrice.mul(BigNumber.from(props.numVials))), gasPrice: feeData?.gasPrice }]
                 }) :
                     createToken?.({
                         recklesslySetUnpreparedArgs: [tokenUri, { gasPrice: feeData?.gasPrice }]

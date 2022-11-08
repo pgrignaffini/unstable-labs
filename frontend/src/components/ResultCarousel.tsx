@@ -1,22 +1,22 @@
 import React, { useState } from 'react'
 import MintButton from "./MintButton"
 import type { Generation } from "../../typings"
-import { ipfsGateway } from "../utils/constants"
 import { Type } from "../utils/constants"
 
 type Props = {
     images: Generation[]
     prompt: string
+    generatedByType: Type
 }
 
-function ResultCarousel({ images, prompt }: Props) {
+function ResultCarousel({ images, prompt, generatedByType }: Props) {
 
     const [imageToShow, setImageToShow] = useState<string>("")
     const [name, setName] = useState<string>("")
     const [description, setDescription] = useState<string>("")
 
-    return (
-        <div>
+    const zoomModal = (
+        <>
             <input type="checkbox" id="zoom-modal" className="modal-toggle" />
             <div className="modal">
                 <div className="relative">
@@ -24,6 +24,11 @@ function ResultCarousel({ images, prompt }: Props) {
                     <img className='w-full h-full object-cover' src={"data:image/.webp;base64," + imageToShow} alt="banner" />
                 </div>
             </div>
+        </>
+    )
+
+    const resultModal = (
+        <>
             <input type="checkbox" id="result-modal" className="modal-toggle" />
             <div className="modal">
                 <div className="w-1/2">
@@ -49,13 +54,27 @@ function ResultCarousel({ images, prompt }: Props) {
                                   outline-none text-black font-pixel placeholder:font-pixel text-sm placeholder:text-sm"
                                     placeholder="Enter description..." onChange={(e) => setDescription(e.target.value)} />
                                 <div className="mx-auto">
-                                    <MintButton image={imageToShow} name={name} description={description} type={Type.Experiment} prompt={prompt} />
+                                    <MintButton
+                                        image={imageToShow}
+                                        name={name}
+                                        description={description}
+                                        type={Type.Experiment}
+                                        prompt={prompt}
+                                        generatedByType={generatedByType}
+                                    />
                                 </div>
                             </form>
                         </div>
                     </div>
                 </div>
             </div>
+        </>
+    )
+
+    return (
+        <div>
+            {zoomModal}
+            {resultModal}
             <div className='bg-gray-400 p-4 overflow-x-auto flex space-x-4'>
                 {images?.map((image: Generation, index: number) => (
                     <div className="flex flex-col space-y-4 items-center " key={index}>
