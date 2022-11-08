@@ -1,6 +1,21 @@
 import axios from 'axios'
-import { Experiment, Generation, Status } from '../../typings';
+import { Experiment, Generation, Option, Status } from '../../typings';
 import { options } from './options';
+
+export const generateImages = async (prompt: string, selectedOption: Option): Promise<string> => {
+    console.log("Generating image with prompt: ", prompt)
+    const response = await axios.post('https://stablehorde.net/api/v2/generate/async', {
+        prompt: prompt,
+        params: selectedOption?.params,
+    }, {
+        headers: {
+            'apikey': process.env.NEXT_PUBLIC_STABLE_HORDE_API_KEY
+        }
+    }).catch(function (error) {
+        console.log(error);
+    });
+    return response?.data?.id
+}
 
 export const remixImage = async (selectedExperiment: Experiment, selectedImage: string): Promise<string> => {
     const option = options.find(option => option.type === selectedExperiment?.generatedByType)
@@ -35,5 +50,5 @@ export const retrieveImages = async (requestID: string | undefined): Promise<Gen
     }).catch(function (error) {
         console.log(error);
     });
-    return (response?.data?.generations)
+    return response?.data?.generations
 }

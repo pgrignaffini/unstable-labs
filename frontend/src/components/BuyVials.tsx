@@ -33,10 +33,13 @@ function BuyVials() {
                                 <p className='font-pixel text-md text-black'>Price: {price.toFixed(4)}</p>
                                 {price > 0 &&
                                     <MintButton
-                                        image={vial.image}
-                                        name={vial.name}
-                                        description={vial.description}
-                                        type={vial.type} isVial={true} numVials={numVials} />}
+                                        metadata={{
+                                            image: vial.image,
+                                            name: vial.name,
+                                            description: vial.description,
+                                            type: vial.type,
+                                        }}
+                                        isVial={true} numVials={numVials} />}
                             </div>
                         </div>
                     </div>
@@ -47,14 +50,14 @@ function BuyVials() {
 
     return (
         <>
-        {buyVialModal}
-        <div className="col-span-2 grid grid-rows-4 gap-8 grid-cols-3 2xl:grid-cols-4">
-            {Vials.map((vial) => (
-                <label htmlFor="buy-vial-modal" onClick={() => setVial(vial)} className='cursor-pointer mt-4'>
-                    <NFTCard nft={vial} isVial />
-                </label>
-            ))}
-        </div>
+            {buyVialModal}
+            <div className="col-span-2 grid grid-rows-4 gap-8 grid-cols-3 2xl:grid-cols-4">
+                {Vials.map((vial) => (
+                    <label htmlFor="buy-vial-modal" onClick={() => setVial(vial)} className='cursor-pointer mt-4'>
+                        <NFTCard nft={vial} isVial />
+                    </label>
+                ))}
+            </div>
         </>
     )
 }

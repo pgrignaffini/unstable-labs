@@ -67,7 +67,7 @@ function Vials({ setVialToBurn, vialToBurn }: Props) {
                             <img className='w-1/3' src={vial?.image} alt="banner" />
                             <div className='flex flex-col space-y-10 items-start'>
                                 <p className='font-pixel text-sm text-black'>{vial?.name} vial</p>
-                                <img className='w-full' src={Previews[vial?.type]?.preview} alt="preview" />
+                                <img className='w-full' src={Previews[vial?.type - 1]?.preview} alt="preview" />
                             </div>
                         </div>
                     </div>

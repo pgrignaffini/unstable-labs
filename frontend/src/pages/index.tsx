@@ -5,23 +5,23 @@ import ResultCarousel from "../components/ResultCarousel";
 import { useQuery } from "react-query";
 import SolidButton from "../components/SolidButton";
 import axios from "axios";
-import type { FormEvent } from "react"
 import Vials from "../components/Vials";
-import type { Vial } from "../../typings";
 import { usePrepareContractWrite, useContractWrite, useWaitForTransaction } from "wagmi";
 import vialContractInfo from "../../../contracts/abi/vialNFT.json";
-import type { Generation, Status, Option } from "../../typings"
+import type { Generation, Status, Option, Vial } from "../../typings"
 import { options } from "../utils/options"
 import { Type } from "../utils/constants";
+import { generateImages, checkStatus, retrieveImages } from "../utils/stableDiffusion";
 
 const Home: NextPage = () => {
 
   const [vialToBurn, setVialToBurn] = React.useState<Vial | undefined>(undefined);
   const [selectedOption, setSelectedOption] = React.useState<Option | undefined>(undefined)
   const [prompt, setPrompt] = React.useState<string>("")
-  const [requestID, setRequestID] = React.useState<string | null>(null)
+  const [requestID, setRequestID] = React.useState<string | undefined>(undefined)
   const [generatedImages, setGeneratedImages] = React.useState<Generation[] | undefined>(undefined)
-  const [status, setStatus] = React.useState<Status | null>(null)
+  const [status, setStatus] = React.useState<Status | undefined>(undefined)
+  const [isGenerating, setIsGenerating] = React.useState<boolean>(false)
 
   // set selected option based on vialToBurn type
   React.useEffect(() => {
@@ -32,57 +32,36 @@ const Home: NextPage = () => {
     }
   }, [vialToBurn])
 
-  const generate = async (prompt: string) => {
-    setGeneratedImages([])
-    setRequestID(null)
-    setStatus(null)
-    console.log("Generating image with prompt: ", prompt)
-    axios.post('https://stablehorde.net/api/v2/generate/async', {
-      prompt: prompt,
-      params: selectedOption?.params,
-    }, {
-      headers: {
-        'apikey': process.env.NEXT_PUBLIC_STABLE_HORDE_API_KEY
-      }
-    }).then(function (response) {
-      console.log(response);
-      setRequestID(response.data.id)
-    }).catch(function (error) {
-      console.log(error);
-    });
-  }
-
-  const checkStatus = async () => {
-    if (requestID) {
-      axios.get(`https://stablehorde.net/api/v2/generate/check/${requestID}`, {
-      }).then(function (response) {
-        console.log(response.data);
-        setStatus(response.data)
-      }).catch(function (error) {
-        console.log(error);
-      });
+  const startGeneration = async (prompt: string) => {
+    if (prompt && selectedOption) {
+      setIsGenerating(true)
+      setGeneratedImages(undefined)
+      setRequestID(undefined)
+      setStatus(undefined)
+      const requestID = await generateImages(prompt, selectedOption)
+      setRequestID(requestID)
     }
   }
 
-  useQuery('checkStatus', checkStatus, {
-    enabled: requestID !== null,
-    refetchInterval: requestID !== null ? 1000 : false
+  useQuery('checkStatus', async () => await checkStatus(requestID), {
+    enabled: requestID !== undefined,
+    refetchInterval: requestID !== undefined ? 1000 : false,
+    onSuccess(data) {
+      setStatus(data)
+    },
   })
 
-  const retrieveImages = async () => {
-    axios.get(`https://stablehorde.net/api/v2/generate/status/${requestID}`, {
-    }).then(function (response) {
-      console.log(response);
-      setGeneratedImages(response.data.generations)
-      setRequestID(null)
-      setStatus(null)
-    }).catch(function (error) {
-      console.log(error);
-    });
-  }
-
-  useQuery('retrieveImages', retrieveImages, {
+  useQuery('retrieveImages', () => retrieveImages(requestID), {
     enabled: status?.done,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    onSuccess(data) {
+      setGeneratedImages(data)
+      setRequestID(undefined)
+      setStatus(undefined)
+      setIsGenerating(false)
+    },
   })
 
   const { config } = usePrepareContractWrite({
@@ -126,7 +105,7 @@ const Home: NextPage = () => {
         console.log(error)
         return
       })
-      generate(newPrompt!)
+      startGeneration(newPrompt!)
       setPrompt(newPrompt!)
       setVialToBurn(undefined)
     }
@@ -185,7 +164,7 @@ const Home: NextPage = () => {
                 {selectedOption?.placeholders?.map((key, index) => (
                   <input key={key} id={`input-${index}`} className='w-full p-4 placeholder:font-pixel text-black outline-none font-pixel' required placeholder={key} />
                 ))}
-                <SolidButton text="Brew" type="submit" loading={status?.done === false} isFinished={status?.done} />
+                <SolidButton text="Brew" type="submit" loading={isGenerating || !status?.done} isFinished={status?.done} />
               </form>
             }
           </div>
@@ -194,9 +173,9 @@ const Home: NextPage = () => {
           <>
             <div className='flex space-x-4 justify-center mt-10'>
               <p className="font-pixel text-sm">Wait time: {status.wait_time}</p>
-              <p className="font-pixel text-sm">{`${status && status.processing <= 0 ? "Queuing the request" : "Queued"}`}</p>
-              {status && status.processing > 0 && <p className="font-pixel text-sm">{`Processing: ${status.processing} images`}</p>}
-              {status && status.finished > 0 && <p className="font-pixel text-sm">{`Finished rendering: ${status.finished} images`}</p>}
+              <p className="font-pixel text-sm">{`${status.processing <= 0 ? "Queuing the request" : "Queued"}`}</p>
+              {status.processing > 0 && <p className="font-pixel text-sm">{`Processing: ${status.processing} images`}</p>}
+              {status.finished > 0 && <p className="font-pixel text-sm">{`Finished rendering: ${status.finished} images`}</p>}
             </div>
             {!status.done && <div className="flex justify-center mt-8">
               <img src="/flask-combining.gif" alt="loading" className="w-64" />

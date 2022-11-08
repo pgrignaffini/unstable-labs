@@ -55,13 +55,14 @@ function ResultCarousel({ images, prompt, generatedByType }: Props) {
                                     placeholder="Enter description..." onChange={(e) => setDescription(e.target.value)} />
                                 <div className="mx-auto">
                                     <MintButton
-                                        image={imageToShow}
-                                        name={name}
-                                        description={description}
-                                        type={Type.Experiment}
-                                        prompt={prompt}
-                                        generatedByType={generatedByType}
-                                    />
+                                        metadata={{
+                                            image: imageToShow,
+                                            name,
+                                            description,
+                                            type: Type.Experiment,
+                                            prompt,
+                                            generatedByType
+                                        }} />
                                 </div>
                             </form>
                         </div>
