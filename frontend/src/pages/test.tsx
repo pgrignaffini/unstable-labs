@@ -12,25 +12,19 @@ function TestPage() {
     const [status, setStatus] = React.useState<Status | null>(null)
     const [image, setImage] = React.useState<string | null>(null)
 
-    // const baseUrl = "https://p882bl70hqiua5-64410b71-3000.proxy.runpod.io/"
+    const baseUrl = "https://rtwlk1dnr3x6tp-64410a29-3000.proxy.runpod.io/"
 
-    // const getModels = async () => {
-    //     await axios.get(baseUrl + "sdapi/v1/sd-models", {
-    //         headers: {
-    //             'accept': 'application/json',
-    //             'Content-Type': 'application/json',
-    //             'Access-Control-Allow-Origin': '*',
-    //         }
-    //     })
-    //         .then((res) => {
-    //             console.log(res.data)
-    //             return res.data
-    //         }).catch((err) => {
-    //             console.log(err)
-    //         })
-    // }
+    const getModels = async () => {
+        axios.get("https://rtwlk1dnr3x6tp-64410a29-3000.proxy.runpod.io/sdapi/v1/sd-models")
+            .then((res) => {
+                console.log(res.data)
+                return res.data
+            }).catch((err) => {
+                console.log(err)
+            })
+    }
 
-    // const { data: models, isLoading: modelsLoading, error: modelsError } = useQuery('models', getModels)
+    const { data: models, isLoading: modelsLoading, error: modelsError } = useQuery('models', getModels)
 
     // const generate = async (prompt: string) => {
     //     setGeneratedImages([])
