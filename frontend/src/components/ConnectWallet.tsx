@@ -14,7 +14,7 @@ function ConnectWallet() {
         <>
             {
                 isConnected ?
-                    <div className='flex space-x-3 items-center' >
+                    <div className='flex space-x-3 items-end' >
                         <img src={makeBlockie(address as string)} className="w-8 h-8" />
                         <p className='font-pixel text-white'>{displayAddress}</p>
                         <button className='bg-acid text-white p-2 text-sm font-pixel' onClick={() => disconnect()}>Disconnect</button>

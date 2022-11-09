@@ -3,6 +3,7 @@ import axios from 'axios'
 import { useQuery } from 'react-query'
 import type { Generation, Status, Option } from "../../typings"
 import { options } from "../utils/options"
+import Airdrop from '../components/Airdrop'
 
 
 function TestPage() {
@@ -12,19 +13,19 @@ function TestPage() {
     const [status, setStatus] = React.useState<Status | null>(null)
     const [image, setImage] = React.useState<string | null>(null)
 
-    const baseUrl = "https://rtwlk1dnr3x6tp-64410a29-3000.proxy.runpod.io/"
+    // const baseUrl = "https://rtwlk1dnr3x6tp-64410a29-3000.proxy.runpod.io/"
 
-    const getModels = async () => {
-        axios.get("https://rtwlk1dnr3x6tp-64410a29-3000.proxy.runpod.io/sdapi/v1/sd-models")
-            .then((res) => {
-                console.log(res.data)
-                return res.data
-            }).catch((err) => {
-                console.log(err)
-            })
-    }
+    // const getModels = async () => {
+    //     axios.get("https://rtwlk1dnr3x6tp-64410a29-3000.proxy.runpod.io/sdapi/v1/sd-models")
+    //         .then((res) => {
+    //             console.log(res.data)
+    //             return res.data
+    //         }).catch((err) => {
+    //             console.log(err)
+    //         })
+    // }
 
-    const { data: models, isLoading: modelsLoading, error: modelsError } = useQuery('models', getModels)
+    // const { data: models, isLoading: modelsLoading, error: modelsError } = useQuery('models', getModels)
 
     // const generate = async (prompt: string) => {
     //     setGeneratedImages([])
@@ -114,47 +115,9 @@ function TestPage() {
     // console.log(isLoading)
 
     return (
-        <></>
-        // <div className='min-h-screen flex justify-center items-center'>
-        //     <div className='flex flex-col justify-center space-y-10'>
-        //         <div className='flex flex-col justify-center space-y-2'>
-        //             <label className='text-xl font-bold'>Select Prompt</label>
-        //             <select onChange={(e) => setSelected(JSON.parse(e.target.value))} className='border-2 border-gray-300 rounded-md p-2'>
-        //                 {options.map(option => (
-        //                     <option key={option.value} value={JSON.stringify(option)}>
-        //                         {option.label}
-        //                     </option>
-        //                 ))}
-        //             </select>
-        //             {selected &&
-        //                 <form className='flex space-x-5 items-center' onSubmit={handleSubmit}>
-        //                     {selected?.placeholders?.map((key, index) => (
-        //                         <input key={key} id={`input-${index}`} className='border-2 border-gray-300 rounded-md p-2' placeholder={key} />
-        //                     ))}
-        //                     <button type='submit' className='bg-blue-500 text-white rounded-md p-2'>Generate</button>
-        //                 </form>
-        //             }
-        //         </div>
-        //         {status &&
-        //             <div className='flex space-x-4'>
-        //                 <p>Wait time: {status.wait_time}</p>
-        //                 <p>{`${status && status.processing <= 0 ? "Queuing the request" : "Queued"}`}</p>
-        //                 {status && status.processing > 0 && <p>{`Processing: ${status.processing} images`}</p>}
-        //                 {status && status.finished > 0 && <p>{`Finished rendering: ${status.finished} images`}</p>}
-        //             </div>
-        //         }
-        //         {
-        //             generatedImages?.map((generation, index) => {
-        //                 return (
-        //                     <div className='flex flex-col space-y-2' key={index}>
-        //                         <img src={"data:image/.webp;base64," + generation.img} alt="image" />
-        //                     </div>
-        //                 )
-        //             })
-        //         }
-        //     </div>
-        //     <img src={"data:image/.webp;base64," + image} alt="image" />
-        // </div>
+        <div className='min-h-screen flex justify-center items-center'>
+            <Airdrop />
+        </div>
     )
 }
 

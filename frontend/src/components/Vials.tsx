@@ -84,8 +84,8 @@ function Vials({ setVialToBurn, vialToBurn }: Props) {
                 const vials: Vial[] = groupedVials[key]
                 return (
                     vials.length > 0 &&
-                    <label htmlFor="info-vial-modal" onClick={() => setSelectedVial(vials[0])}>
-                        <NFTCard key={index} nft={vials[0] as Vial} multiple={vials.length} isVial={true} />
+                    <label key={index} htmlFor="info-vial-modal" onClick={() => setSelectedVial(vials[0])}>
+                        <NFTCard nft={vials[0] as Vial} multiple={vials.length} isVial={true} />
                     </label>
                 )
             })}
@@ -94,10 +94,10 @@ function Vials({ setVialToBurn, vialToBurn }: Props) {
 
     const displayVialSelectionGrid = (
         <div className="grid md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 p-2 gap-4">
-            {Object.keys(groupedVials).map((key) => {
+            {Object.keys(groupedVials).map((key, index) => {
                 const vials = groupedVials[key]
                 return (vials.length > 0 &&
-                    <div onClick={() => setVialToBurn?.(vials[0] as Vial)}>
+                    <div key={index} onClick={() => setVialToBurn?.(vials[0] as Vial)}>
                         <VialSelectionContainer selected={vialToBurn === (vials[0] as Vial)} vial={vials[0] as Vial} multiple={vials.length} />
                     </div>
                 )

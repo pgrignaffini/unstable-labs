@@ -27,7 +27,7 @@ function Header() {
                     Log in
                 </p>}
             {session &&
-                (<div className="flex space-x-8 items-center">
+                (<div className="flex space-x-8 items-end">
                     <button className="font-pixel font-xl text-white cursor-pointer" onClick={() => signOut()}>
                         <p>Log out</p>
                     </button>
