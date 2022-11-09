@@ -12,9 +12,13 @@ import type { Generation, Status, Option, Vial } from "../../typings"
 import { options } from "../utils/options"
 import { Type } from "../utils/constants";
 import { generateImages, checkStatus, retrieveImages } from "../utils/stableDiffusion";
+import { trpc } from '../utils/trpc'
+import { useSession } from 'next-auth/react'
+import Airdrop from "../components/Airdrop";
 
 const Home: NextPage = () => {
 
+  const { data: session } = useSession()
   const [vialToBurn, setVialToBurn] = React.useState<Vial | undefined>(undefined);
   const [selectedOption, setSelectedOption] = React.useState<Option | undefined>(undefined)
   const [prompt, setPrompt] = React.useState<string>("")
@@ -31,6 +35,11 @@ const Home: NextPage = () => {
       console.log("Selected option: ", option?.label)
     }
   }, [vialToBurn])
+
+  // get user from id
+  const { data: user } = trpc.useQuery(['user.get-user', {
+    id: session?.user?.id || '1'
+  }])
 
   const startGeneration = async (prompt: string) => {
     if (prompt && selectedOption) {
@@ -185,6 +194,10 @@ const Home: NextPage = () => {
         {generatedImages &&
           <div className="w-full mt-24">
             <ResultCarousel images={generatedImages} prompt={prompt} generatedByType={selectedOption?.type as Type} />
+          </div>}
+        {user && !user?.hasClaimedVials &&
+          <div className="flex justify-center mt-24">
+            <Airdrop user={user} />
           </div>}
         <div className="mt-24 flex justify-evenly">
           <img src="/barrel-toxic.gif" alt="barrel" className="w-24" />
