@@ -109,4 +109,11 @@ describe("Marketplace contract", function () {
         vials = await vialNFT.connect(addr1).getVialsOwnedByMe();
         expect(vials.length).to.equal(7);
     })
+    it("Should airdrop vials to selected address", async function () {
+        const { vialNFT, owner, addr1 } = await deployMarketplaceFixture();
+        await vialNFT.connect(owner).airdropVials("https://www.mytokenURI.com", 10, addr1.address);
+        let vials = await vialNFT.connect(addr1).getVialsOwnedByMe();
+        expect(vials.length).to.equal(10);
+        expect(vialNFT.connect(addr1).airdropVials("https://www.mytokenURI.com", 10, owner.address)).to.be.revertedWith("Ownable: caller is not the owner");
+    })
 });

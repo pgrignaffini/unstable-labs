@@ -4,9 +4,10 @@ pragma solidity ^0.8.4;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 import "hardhat/console.sol";
 
-contract VialNFT is ERC721URIStorage {
+contract VialNFT is ERC721URIStorage, Ownable {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
     mapping(uint256 => string) public tokenURIs;
@@ -38,10 +39,34 @@ contract VialNFT is ERC721URIStorage {
         payable(marketplaceAddress).transfer(msg.value);
     }
 
+    function airdropVials(
+        string memory tokenURI,
+        uint256 number,
+        address _to
+    ) public onlyOwner {
+        for (uint256 i = 0; i < number; i++) {
+            mintVialToAddress(tokenURI, _to);
+        }
+    }
+
     function mintVial(string memory tokenURI) internal returns (uint256) {
         _tokenIds.increment();
         uint256 newItemId = _tokenIds.current();
         _safeMint(msg.sender, newItemId);
+        _setTokenURI(newItemId, tokenURI);
+        tokenURIs[newItemId] = tokenURI;
+
+        emit VialMinted(newItemId, tokenURI);
+        return newItemId;
+    }
+
+    function mintVialToAddress(string memory tokenURI, address _to)
+        internal
+        returns (uint256)
+    {
+        _tokenIds.increment();
+        uint256 newItemId = _tokenIds.current();
+        _safeMint(_to, newItemId);
         _setTokenURI(newItemId, tokenURI);
         tokenURIs[newItemId] = tokenURI;
 
