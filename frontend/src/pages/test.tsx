@@ -36,6 +36,7 @@ function TestPage() {
             .catch((err) => {
                 console.log(err)
             })
+        console.log(response?.data)
         return response?.data
     }
 
