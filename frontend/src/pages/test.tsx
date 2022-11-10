@@ -55,6 +55,8 @@ function TestPage() {
 
     const text2Image = async () => {
         if (!models || !selectedStyle) return
+        setImages(undefined)
+        setSelectedImage('')
         setIsLoading(true)
         const response = await axios.post("/api/stable-diffusion/txt2img", {
             prompt,
@@ -70,18 +72,20 @@ function TestPage() {
     }
 
     const image2Image = async () => {
-        if (!models || !selectedStyle || !images) return
+        if (!models || !selectedStyle || !selectedImage) return
         setIsLoading(true)
+        setImages(undefined)
         const response = await axios.post("/api/stable-diffusion/img2img", {
             prompt,
             style: selectedStyle,
             vary: true,
-            image: images[0],
+            image: selectedImage,
         }).catch((err) => {
             console.log(err)
         })
         console.log(response)
         setImages(response?.data.images)
+        setSelectedImage('')
         setIsLoading(false)
         return response
     }

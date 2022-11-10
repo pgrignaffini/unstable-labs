@@ -15,7 +15,7 @@ const body = {
     seed: -1,
     subseed: -1,
     subseed_strength: -1,
-    batch_size: 4,
+    batch_size: 8,
     n_iter: 1,
     steps: 50,
     cfg_scale: 10,
