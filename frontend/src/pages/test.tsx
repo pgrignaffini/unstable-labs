@@ -6,11 +6,14 @@ function TestPage() {
 
     const [prompt, setPrompt] = React.useState('')
     const [styles, setStyles] = React.useState<any>(undefined)
-    const [selectedStyle, setSelectedStyle] = React.useState<string>('')
-    const [selectedImage, setSelectedImage] = React.useState<string>('')
     const [models, setModels] = React.useState<any>(undefined)
     const [images, setImages] = React.useState<any>(undefined)
+    const [selectedStyle, setSelectedStyle] = React.useState<string>('')
+    const [selectedImage, setSelectedImage] = React.useState<string>('')
+    const [selectedModel, setSelectedModel] = React.useState<string>('v1-5-pruned-emaonly.ckpt [81761151]')
     const [isLoading, setIsLoading] = React.useState<boolean>(false)
+
+    console.log({ prompt, selectedStyle, selectedImage, selectedModel })
 
     const getModels = async () => {
         const response = await axios.get("/api/stable-diffusion/models")
@@ -54,14 +57,14 @@ function TestPage() {
     })
 
     const text2Image = async () => {
-        if (!models || !selectedStyle) return
+        if (!prompt || !selectedStyle || !selectedModel) return
         setImages(undefined)
         setSelectedImage('')
         setIsLoading(true)
         const response = await axios.post("/api/stable-diffusion/txt2img", {
             prompt,
             style: selectedStyle,
-            model: models[0].title,
+            model: selectedModel,
         }).catch((err) => {
             console.log(err)
         })
@@ -93,6 +96,11 @@ function TestPage() {
     return (
         <div className='min-h-screen p-10 space-y-10'>
             <div className='flex space-x-4 justify-center'>
+                {models && <select className='p-2 font-pixel' onChange={(e) => setSelectedModel(e.target.value)}>
+                    {models.map((model: any) => (
+                        <option key={model.title} value={model.title}>{model.title}</option>
+                    ))}
+                </select>}
                 {styles && <select className='p-2 font-pixel' onChange={(e) => setSelectedStyle(e.target.value)}>
                     {styles.map((style: any) => (
                         <option key={style.name} value={style.name}>{style.name}</option>
