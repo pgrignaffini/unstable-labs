@@ -92,7 +92,6 @@ function TestPage() {
 
     return (
         <div className='min-h-screen p-10 space-y-10'>
-            {/* select component with all styles option */}
             <div className='flex space-x-4 justify-center'>
                 {styles && <select className='p-2 font-pixel' onChange={(e) => setSelectedStyle(e.target.value)}>
                     {styles.map((style: any) => (
