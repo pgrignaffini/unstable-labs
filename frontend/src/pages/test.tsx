@@ -13,19 +13,17 @@ function TestPage() {
     const [status, setStatus] = React.useState<Status | null>(null)
     const [image, setImage] = React.useState<string | null>(null)
 
-    // const baseUrl = "https://rtwlk1dnr3x6tp-64410a29-3000.proxy.runpod.io/"
+    const baseUrl = "https://tnustjwvuf10wo-64410b8f-8888.proxy.runpod.io/"
 
-    // const getModels = async () => {
-    //     axios.get("https://rtwlk1dnr3x6tp-64410a29-3000.proxy.runpod.io/sdapi/v1/sd-models")
-    //         .then((res) => {
-    //             console.log(res.data)
-    //             return res.data
-    //         }).catch((err) => {
-    //             console.log(err)
-    //         })
-    // }
+    const getModels = async () => {
+        const response = await axios.get("/api/models")
+            .catch((err) => {
+                console.log(err)
+            })
 
-    // const { data: models, isLoading: modelsLoading, error: modelsError } = useQuery('models', getModels)
+        console.log(response)
+        return response
+    }
 
     // const generate = async (prompt: string) => {
     //     setGeneratedImages([])
@@ -116,6 +114,9 @@ function TestPage() {
 
     return (
         <div className='min-h-screen flex justify-center items-center'>
+            <button className='p-2 font-pixel text-white bg-acid' onClick={getModels}>
+                Send
+            </button>
         </div>
     )
 }
