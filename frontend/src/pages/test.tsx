@@ -1,122 +1,113 @@
 import React from 'react'
 import axios from 'axios'
 import { useQuery } from 'react-query'
-import type { Generation, Status, Option } from "../../typings"
-import { options } from "../utils/options"
-import Airdrop from '../components/Airdrop'
-
 
 function TestPage() {
 
-    const [requestID, setRequestID] = React.useState<string | null>(null)
-    const [generatedImages, setGeneratedImages] = React.useState<Generation[]>([])
-    const [status, setStatus] = React.useState<Status | null>(null)
-    const [image, setImage] = React.useState<string | null>(null)
-
-    const baseUrl = "https://tnustjwvuf10wo-64410b8f-8888.proxy.runpod.io/"
+    const prompt = "a pangolin"
+    const [styles, setStyles] = React.useState<any>(undefined)
+    const [models, setModels] = React.useState<any>(undefined)
+    const [images, setImages] = React.useState<any>(undefined)
+    const [isLoading, setIsLoading] = React.useState<boolean>(false)
 
     const getModels = async () => {
-        const response = await axios.get("/api/models")
+        const response = await axios.get("/api/stable-diffusion/models")
             .catch((err) => {
                 console.log(err)
             })
-
-        console.log(response)
         return response
     }
 
-    // const generate = async (prompt: string) => {
-    //     setGeneratedImages([])
-    //     setRequestID(null)
-    //     setStatus(null)
-    //     axios.post('https://stablehorde.net/api/v2/generate/async', {
-    //         prompt: prompt,
-    //         params: selected?.params,
-    //     }, {
-    //         headers: {
-    //             'apikey': process.env.NEXT_PUBLIC_STABLE_HORDE_API_KEY
-    //         }
-    //     }).then(function (response) {
-    //         console.log(response);
-    //         setRequestID(response.data.id)
-    //     }).catch(function (error) {
-    //         console.log(error);
-    //     });
-    // }
+    const getStyles = async () => {
+        const response = await axios.get("/api/stable-diffusion/prompt-styles")
+            .catch((err) => {
+                console.log(err)
+            })
+        return response
+    }
 
-    // const checkStatus = async () => {
-    //     if (requestID) {
-    //         axios.get(`https://stablehorde.net/api/v2/generate/check/${requestID}`, {
-    //         }).then(function (response) {
-    //             console.log(response.data);
-    //             setStatus(response.data)
-    //         }).catch(function (error) {
-    //             console.log(error);
-    //         });
-    //     }
-    // }
+    const checkStatus = async () => {
+        const response = await axios.get("/api/stable-diffusion/check-status")
+            .catch((err) => {
+                console.log(err)
+            })
+        return response
+    }
 
-    // useQuery('checkStatus', checkStatus, {
-    //     enabled: requestID !== null,
-    //     refetchInterval: requestID !== null ? 1000 : false
-    // })
+    useQuery("models", getModels, {
+        onSuccess: (data) => {
+            setModels(data?.data)
+        }
+    })
 
-    // const retrieveImages = async () => {
-    //     axios.get(`https://stablehorde.net/api/v2/generate/status/${requestID}`, {
-    //     }).then(function (response) {
-    //         console.log(response);
-    //         setGeneratedImages(response.data.generations)
-    //         setRequestID(null)
-    //         setStatus(null)
-    //     }).catch(function (error) {
-    //         console.log(error);
-    //     });
-    // }
+    useQuery("styles", getStyles, {
+        onSuccess: (data) => {
+            setStyles(data?.data)
+        }
+    })
 
-    // useQuery('retrieveImages', retrieveImages, {
-    //     enabled: status?.done,
-    // })
+    const { data: status } = useQuery("status", checkStatus, {
+        enabled: isLoading,
+        refetchInterval: 1000,
+    })
 
-    // const [selected, setSelected] = React.useState<Option | undefined>(options[0])
+    const text2Image = async () => {
+        if (!models || !styles) return
+        setIsLoading(true)
+        const response = await axios.post("/api/stable-diffusion/txt2img", {
+            prompt,
+            style: styles[2].name,
+            model: models[0].title,
+        }).catch((err) => {
+            console.log(err)
+        })
+        console.log(response)
+        setImages(response?.data.images)
+        setIsLoading(false)
+        return response
+    }
 
-    // const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    //     event.preventDefault()
-    //     let newPrompt = selected?.prompt
-    //     selected?.placeholders.map((_, index) => {
-    //         const userInput = (document.getElementById(`input-${index}`) as HTMLInputElement).value
-    //         newPrompt = newPrompt?.replace(`${index}`, userInput)
-    //     })
-    //     console.log("New prompt " + newPrompt)
-    //     generate(newPrompt!)
-    // }
-
-    // const text2Image = () => {
-    //     axios.post('https://t402ufstkbijfn-64410ba0-3000.proxy.runpod.io/sdapi/v1/txt2img', {
-    //         prompt: "tiny cute super mario toy, standing character, soft smooth lighting, soft pastel colors, skottie young, 3d blender render, polycount, modular export constructivism, pop surrealism, physically based rendering, square image",
-    //     }, {
-    //         headers: {
-    //             'accept': 'application/json',
-    //             'Content-Type': 'application/json',
-    //         }
-    //     }).then(function (response) {
-    //         console.log(response.data.images[0]);
-    //         setImage(response.data.images[0])
-    //     }).catch(function (error) {
-    //         console.log(error);
-    //     });
-    // }
-
-    // const { data, isLoading } = useQuery('text2Img', text2Image, {
-    //     enabled: true,
-    // })
-
-    // console.log(isLoading)
+    const image2Image = async () => {
+        if (!models || !styles || !images) return
+        setIsLoading(true)
+        const response = await axios.post("/api/stable-diffusion/img2img", {
+            prompt,
+            style: styles[2].name,
+            vary: true,
+            image: images[0],
+        }).catch((err) => {
+            console.log(err)
+        })
+        console.log(response)
+        setImages(response?.data.images)
+        setIsLoading(false)
+        return response
+    }
 
     return (
-        <div className='min-h-screen flex justify-center items-center'>
-            <button className='p-2 font-pixel text-white bg-acid' onClick={getModels}>
-                Send
-            </button>
+        <div className='min-h-screen'>
+            <div className='flex space-x-5 justify-center mt-5 items-center'>
+                <button className='p-2 font-pixel text-white bg-acid' onClick={getModels}>
+                    Models
+                </button>
+                <button className='p-2 font-pixel text-white bg-acid' onClick={getStyles}>
+                    Styles
+                </button>
+                <button className='p-2 font-pixel text-white bg-acid' onClick={text2Image}>
+                    Txt2Img
+                </button>
+                <button className='p-2 font-pixel text-white bg-acid' onClick={image2Image}>
+                    Img2Img
+                </button>
+            </div>
+            {status ? <p className="p-4 font-pixel text-sm">Wait time: {status?.data.eta_relative.toFixed(0)}s</p> : null}
+            <div className='grid p-4 grid-cols-4 gap-4 mt-6'>
+                {images && images.map((image: any, index: number) => {
+                    return (
+                        <img key={index} src={`data:image/.webp;base64,${image}`} />
+                    )
+                })}
+            </div>
         </div>
     )
 }
