@@ -13,7 +13,7 @@ function TestPage() {
     const [selectedModel, setSelectedModel] = React.useState<string>('v1-5-pruned-emaonly.ckpt [81761151]')
     const [isLoading, setIsLoading] = React.useState<boolean>(false)
 
-    console.log({ prompt, selectedStyle, selectedImage, selectedModel })
+    // console.log({ prompt, selectedStyle, selectedImage, selectedModel })
 
     const getModels = async () => {
         const response = await axios.get("/api/stable-diffusion/models")
