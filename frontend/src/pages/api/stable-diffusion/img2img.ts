@@ -38,6 +38,7 @@ const handler = nc()
         body.init_images = [";," + image as string]
         // console.log({ ...body })
         axios.post(`${baseUrl}/sdapi/v1/img2img`, {
+            timeout: 10000,
             ...body,
             headers: { 'accept': 'application/json' }
         }).then((response) => {

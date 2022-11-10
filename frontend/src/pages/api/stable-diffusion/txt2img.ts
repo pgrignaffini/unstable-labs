@@ -28,6 +28,7 @@ const handler = nc()
         body.override_settings.sd_model_checkpoint = model as string
         // console.log({ ...body })
         axios.post(`${baseUrl}/sdapi/v1/txt2img`, {
+            timeout: 10000,
             ...body,
             headers: { 'accept': 'application/json' }
         }).then((response) => {
