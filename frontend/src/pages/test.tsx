@@ -35,9 +35,9 @@ function TestPage() {
     const [isLoading, setIsLoading] = React.useState<boolean>(false)
     const [request, setRequest] = React.useState<Request | undefined>(undefined)
     const [progress, setProgress] = React.useState<Progress | undefined>(undefined)
-    const [preview, setPreview] = React.useState<string | undefined>(undefined)
+    // const [preview, setPreview] = React.useState<string | undefined>(undefined)
 
-    const queryClient = useQueryClient()
+    // const queryClient = useQueryClient()
 
     // console.log({ prompt, selectedStyle, selectedImage, selectedModel })
 
@@ -67,15 +67,14 @@ function TestPage() {
         return response?.data.base64
     }
 
-    useQuery("preview", getPreview, {
-        enabled: selectedStyle !== '',
-        refetchOnWindowFocus: false,
-        refetchOnReconnect: false,
-        retry: 1,
-        onSuccess: (data) => {
-            setPreview(data)
-        }
-    })
+    // useQuery("preview", getPreview, {
+    //     enabled: selectedStyle !== '',
+    //     refetchOnWindowFocus: false,
+    //     refetchOnReconnect: false,
+    //     onSuccess: (data) => {
+    //         setPreview(data)
+    //     }
+    // })
 
 
     const checkStatus = async (req: Request) => {
@@ -151,8 +150,8 @@ function TestPage() {
         <div className='min-h-screen p-10 space-y-10'>
             <div className='flex space-x-4 justify-center'>
                 {styles && <select className='p-2 font-pixel text-black' onChange={(e) => {
-                    queryClient.invalidateQueries("preview")
                     setSelectedStyle(e.target.value)
+                    // queryClient.invalidateQueries("preview")
                 }}>
                     {styles.map((style: any) => (
                         <option key={style.name} value={style.name}>{style.name}</option>
@@ -162,7 +161,7 @@ function TestPage() {
                     className='p-2 bg-white font-pixel outline-none text-black' id='prompt' placeholder='Prompt' />
             </div>
             <div className='flex justify-center'>
-                {preview && <img src={`data:image/.png;base64,${preview}`} alt="preview" className='w-48' />}
+                {/* {preview && <img src={`data:image/.png;base64,${preview}`} alt="preview" className='w-48' />} */}
             </div>
             <div className='flex space-x-5 justify-center items-center'>
                 <button className='p-2 font-pixel text-white bg-acid hover:bg-dark-acid' onClick={text2Image}>
