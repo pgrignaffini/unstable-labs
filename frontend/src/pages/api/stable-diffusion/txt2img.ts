@@ -5,29 +5,18 @@ import nc from "next-connect";
 import cors from "cors";
 
 const body = {
-    enable_hr: false,
     prompt: "",
-    negative_prompt: "",
-    styles: [""],
-    seed: -1,
-    batch_size: 8,
-    n_iter: 1,
-    steps: 50,
-    cfg_scale: 10,
-    restore_faces: false,
-    override_settings: { sd_model_checkpoint: "" },
-    sampler_index: "Euler a"
+    style: "",
 }
 
 const handler = nc()
     .use(cors())
     .post(async (req: NextApiRequest, res: NextApiResponse) => {
-        const { prompt, style, model } = req.body
+        const { prompt, style } = req.body
         body.prompt = prompt as string
-        body.styles = [style as string]
-        body.override_settings.sd_model_checkpoint = model as string
+        body.style = style as string
         // console.log({ ...body })
-        axios.post(`${baseUrl}/sdapi/v1/txt2img`, {
+        axios.post(`${baseUrl}/sdapi/v1/txt2imgLab`, {
             timeout: 1000 * 60 * 10,
             ...body,
             headers: { 'accept': 'application/json' }

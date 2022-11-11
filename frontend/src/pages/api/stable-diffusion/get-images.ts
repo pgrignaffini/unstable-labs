@@ -4,24 +4,11 @@ import { baseUrl } from '../../../utils/constants'
 import nc from "next-connect";
 import cors from "cors";
 
-const body = {
-    prompt: "",
-    style: "",
-    image: "",
-    vial: "vary"
-}
-
 const handler = nc()
     .use(cors())
-    .post(async (req: NextApiRequest, res: NextApiResponse) => {
-        const { prompt, style, image } = req.body
-        body.prompt = prompt as string
-        body.style = style as string
-        body.image = image as string
-        // console.log({ ...body })
-        axios.post(`${baseUrl}/sdapi/v1/img2imgLab`, {
-            timeout: 1000 * 60 * 10,
-            ...body,
+    .get(async (req: NextApiRequest, res: NextApiResponse) => {
+        const { job_hash } = req.query
+        axios.get(`${baseUrl}/file=outputs/api_imgs/${job_hash}.txt`, {
             headers: { 'accept': 'application/json' }
         }).then((response) => {
             res.status(200).json(response.data)
