@@ -55,3 +55,4 @@ export enum Type {
     silhoutteWallpaper,
     needleFeltedObject,
 }
+
