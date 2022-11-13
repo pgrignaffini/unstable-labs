@@ -1,6 +1,7 @@
 import React from 'react'
 import axios from 'axios'
 import { useQuery, useQueryClient } from 'react-query'
+import { baseUrl } from '../utils/constants'
 
 type Request = {
     job_count: number
@@ -24,37 +25,23 @@ type Progress = {
     }
 }
 
-function TestPage() {
+type Style = {
+    name: string,
+    prompt: string,
+    negative_prompt: string,
+}
+
+function TestPage({ styles }: { styles: Style[] }) {
 
     const [prompt, setPrompt] = React.useState('')
-    const [styles, setStyles] = React.useState<any>(undefined)
-    const [models, setModels] = React.useState<any>(undefined)
     const [selectedStyle, setSelectedStyle] = React.useState<string>('')
     const [selectedImage, setSelectedImage] = React.useState<string>('')
-    const [selectedModel, setSelectedModel] = React.useState<string>('v1-5-pruned-emaonly.ckpt [81761151]')
     const [isLoading, setIsLoading] = React.useState<boolean>(false)
     const [request, setRequest] = React.useState<Request | undefined>(undefined)
     const [progress, setProgress] = React.useState<Progress | undefined>(undefined)
-    // const [preview, setPreview] = React.useState<string | undefined>(undefined)
-
-    // const queryClient = useQueryClient()
+    const queryClient = useQueryClient()
 
     // console.log({ prompt, selectedStyle, selectedImage, selectedModel })
-
-    const getStyles = async () => {
-        const response = await axios.get("/api/stable-diffusion/prompt-styles")
-            .catch((err) => {
-                console.log(err)
-            })
-        return response?.data
-    }
-
-
-    useQuery("styles", getStyles, {
-        onSuccess: (data) => {
-            setStyles(data)
-        }
-    })
 
     const getPreview = async () => {
         const response = await axios.get("/api/stable-diffusion/get-previews", {
@@ -67,22 +54,24 @@ function TestPage() {
         return response?.data.base64
     }
 
-    // useQuery("preview", getPreview, {
+    // const { data: preview } = useQuery("preview", getPreview, {
     //     enabled: selectedStyle !== '',
     //     refetchOnWindowFocus: false,
     //     refetchOnReconnect: false,
     //     onSuccess: (data) => {
-    //         setPreview(data)
+    //         console.log("preview", data)
     //     }
     // })
 
 
-    const checkStatus = async (req: Request) => {
+    const checkProgress = async (req: Request) => {
         if (!req) return
-        const response = await axios.get("/api/stable-diffusion/check-status")
-            .catch((err) => {
-                console.log(err)
-            })
+        const response = await axios.get("/api/stable-diffusion/check-progress", {
+            params: { job_no: req.job_no }
+        }).catch((err) => {
+            console.log(err)
+            return
+        })
         let progress: Progress = response?.data
         progress.state.done = false
         console.log("Progress", progress)
@@ -93,7 +82,7 @@ function TestPage() {
         return progress
     }
 
-    const { data: status } = useQuery("status", () => checkStatus(request as Request), {
+    const { data: progressData } = useQuery("progress", () => checkProgress(request as Request), {
         enabled: !!request && (progress?.state.done === false || progress === undefined),
         refetchInterval: 1000,
         onSuccess(data) {
@@ -108,6 +97,7 @@ function TestPage() {
             console.log(err)
         })
         const images = response?.data.split("\n")
+        console.log("Images", images)
         return images
     }
 
@@ -153,7 +143,7 @@ function TestPage() {
                     setSelectedStyle(e.target.value)
                     // queryClient.invalidateQueries("preview")
                 }}>
-                    {styles.map((style: any) => (
+                    {styles?.map((style: any) => (
                         <option key={style.name} value={style.name}>{style.name}</option>
                     ))}
                 </select>}
@@ -176,7 +166,7 @@ function TestPage() {
                     <p className='font-pixel text-sm text-white'>Selected image:</p>
                     <img className='w-12' src={`data:image/.webp;base64,${selectedImage}`} />
                 </div> : null}
-            {status ? <p className="font-pixel text-sm text-center">Wait time: {status?.eta_relative.toFixed(0)}s</p> : null}
+            {progressData ? <p className="font-pixel text-sm text-center">Wait time: {progress?.eta_relative.toFixed(0)}s</p> : null}
             <div className='grid grid-cols-4 gap-4'>
                 {images && images.map((image: string, index: number) => {
                     return (
@@ -189,4 +179,17 @@ function TestPage() {
     )
 }
 
-export default TestPage
+// get styles from server side and pass to client
+export async function getServerSideProps() {
+    const styles = await axios.get(`${baseUrl}/sdapi/v1/prompt-styles`)
+        .catch((err) => {
+            console.log(err)
+        })
+    return {
+        props: {
+            styles: styles?.data,
+        }
+    }
+}
+
+export default TestPage 

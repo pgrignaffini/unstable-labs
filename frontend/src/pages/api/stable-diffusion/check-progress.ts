@@ -6,8 +6,13 @@ import cors from "cors";
 
 const handler = nc()
     .use(cors())
-    .get(async (_: NextApiRequest, res: NextApiResponse) => {
-        axios.get(`${baseUrl}/sdapi/v1/progress?skip_current_image=false`, {
+    .get(async (req: NextApiRequest, res: NextApiResponse) => {
+        const { jobNumber } = req.query
+        axios.get(`${baseUrl}/sdapi/v1/progress`, {
+            params: {
+                skip_current_image: false,
+                job_no: jobNumber
+            },
             headers: { 'accept': 'application/json' }
         }).then((response) => {
             res.status(200).json(response.data)
